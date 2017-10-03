@@ -1,0 +1,122 @@
+.app-nav{
+	height: 60px;
+	background-color: rgb(24,37,53);
+	color: white;
+	box-sizing: border-box;
+	border-bottom: #757988 solid 1px;
+	ul{
+		display: flex;
+		margin: 0;
+		padding: 0 30px;
+		li{
+			width: 160px;
+			height: 58px;
+			list-style: none;
+			display:flex;
+			justify-content: space-between;
+			align-items: center;
+
+			a {
+				color: white;
+				font-size: 18px;
+				height:100%;
+				width:100%;
+				line-height: 100%;
+				outline: none;
+				text-decoration: none;
+				display:flex;
+				align-items: center;
+			}
+			&:hover{
+				background-color: #242b42;
+			}
+			.active{
+				background-color: #242b42;
+			}
+			&:nth-child(1){
+				a{
+					&:before{
+						content: '';
+						background-image: url('../../img/nav1.png');
+						background-size: cover;
+						width:26px;
+						height:18px;
+						margin-left: 20px;
+						margin-right: 20px;
+					}
+				}
+				&:after{
+					content: '';
+					background: #44b7de;
+					width: 2px;
+					height: 30px;
+					border-radius: 1px;
+
+				}
+			}
+			&:nth-child(2){
+				a{
+					&:before{
+						content: '';
+						background-image: url('../../img/nav2.png');
+						background-size: cover;
+						width:18px;
+						height:18px;
+						margin-left: 20px;
+						margin-right: 20px;
+					}
+				}
+				&:after{
+					content: '';
+					background: #f6726f;
+					width: 2px;
+					height: 30px;
+					border-radius: 1px;
+
+				}
+			}
+			&:nth-child(3){
+				a{
+					&:before{
+						content: '';
+						background-image: url('../../img/nav3.png');
+						background-size: cover;
+						width:24px;
+						height:18px;
+						margin-left: 20px;
+						margin-right: 20px;
+					}
+				}
+				&:after{
+					content: '';
+					background: #4bd0c8;
+					width: 2px;
+					height: 30px;
+					border-radius: 1px;
+
+				}
+			}
+			&:nth-child(4){
+				a{
+					&:before{
+						content: '';
+						background-image: url('../../img/nav4.png');
+						background-size: cover;
+						width:18px;
+						height:18px;
+						margin-left: 20px;
+						margin-right: 20px;
+					}
+				}
+				&:after{
+					content: '';
+					background: #c9f664;
+					width: 2px;
+					height: 30px;
+					border-radius: 1px;
+
+				}
+			}
+		}
+	}
+}
