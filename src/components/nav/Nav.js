@@ -5,10 +5,10 @@ class Nav extends Component {
 		return (
 			<nav>
 		    	<ul>
-		    		<li><Link to='/'>Home</Link></li>
-		    		<li><Link to='/fence'>Fence</Link></li>
-		    		<li><Link to='/trace'>Trace</Link></li>
-		    		<li><Link to='/notice'>Notice</Link></li>
+		    		<li><Link to='/app/overview'>Overview</Link></li>
+		    		<li><Link to='/app/fence'>Fence</Link></li>
+		    		<li><Link to='/app/trace'>Trace</Link></li>
+		    		<li><Link to='/app/notice'>Notice</Link></li>
 		    	</ul>
 		    </nav>
 		);

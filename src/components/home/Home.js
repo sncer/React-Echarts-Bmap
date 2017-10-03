@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 export class Home extends Component {
 	render() {
 		return (
-			<div>牧场概览</div>
+			<div>主页</div>
 		);
 	}
 }
