@@ -1,10 +1,59 @@
 .overview{
-	.img-wrap {
-		height: 135px;
-		padding-top: 15px;
-		text-align: center;
-		img {
-			height: 100%;
+	min-height: 824px;
+	.left{
+		.img-wrap {
+			height: 135px;
+			padding-top: 15px;
+			text-align: center;
+			img {
+				height: 100%;
+			}
 		}
+	}
+	.right{
+		display: flex;
+		flex-direction:column;
+		.top{
+			position: relative;
+			background-color: #202b49;
+			height: 500px;
+			margin: 10px;
+			
+		}
+		.bottom{
+			position: relative;
+			background-color: #202b49;
+			margin: 0 10px;
+			flex:1;
+		}
+	}
+	.select_bar{
+		position: absolute;
+		top: 0;
+		left: 80px;
+		display: flex;
+		align-items: center;
+		padding: 10px 20px;
+		z-index: 10;
+		label{
+			color: white;
+			font-size: 16px;
+			margin-right: 10px;
+			margin-bottom: 0;
+			height: 25px;
+
+		}
+		select{
+			background: none;
+		    border: #888e9e solid 1px;
+		    border-radius: 16px;
+		    width: 110px;
+		    color: #fff;
+		    padding: 1px 15px;
+		    margin-right: 10px;
+		    option{
+		    	color: #aaaaaa;
+		    }
+		}		
 	}
 }

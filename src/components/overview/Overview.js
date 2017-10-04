@@ -2,11 +2,14 @@ import React, { Component } from 'react';
 import Sum from '../../components/sum/Sum';
 import PieChart from '../../components/pieChart/PieChart';
 import PictorialBarChart from '../../components/pictorialBarChart/PictorialBarChart';
+import HeatMapChart from '../../components/heatMapChart/HeatMapChart';
+import RankLineChart from '../../components/rankLineChart/RankLineChart';
 import RefreshTime from '../../components/refreshTime/RefreshTime';
 import './Overview.scss';
 import povertyImg from '../../img/poverty.png';
 
 export class Overview extends Component {
+
 	render() {
 		return (
 			<div className="main overview">
@@ -42,7 +45,27 @@ export class Overview extends Component {
 					<RefreshTime />
 				</div>
 				<div className="right">
-					
+					<div className="top">
+						<div className="select_bar">
+							<select>
+								<option>请选择省</option>
+								<option>山东省</option>
+								<option>河北省</option>
+								<option>山西省</option>
+							</select>
+							<select>
+								<option>请选择市</option>
+								<option>北京市</option>
+								<option>上海市</option>
+								<option>无锡市</option>
+							</select>
+						</div>
+						<HeatMapChart />
+					</div>
+					<div className="bottom">
+						
+						<RankLineChart />
+					</div>
 				</div>
 			</div>
 		);
