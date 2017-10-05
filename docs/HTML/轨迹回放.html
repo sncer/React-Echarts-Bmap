@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>轨迹回放</title>
+		<link rel="stylesheet" href="js/bootstrap-fileinput-master20151222/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="css/comm.css" />
+		<link rel="stylesheet" href="css/index.css" />
+		<script type="text/javascript" src="js/bootstrap-fileinput-master20151222/js/jquery-2.0.3.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap-fileinput-master20151222/js/bootstrap.min.js" ></script>
+		<script type="text/javascript" src="js/echarts.min.js" ></script>
+		<script type="text/javascript" src="js/china.js" ></script>
+		<script type="text/javascript"src="http://api.map.baidu.com/api?v=2.0&ak=hYCENCEx1nXO0Nt46ldexfG9oI49xBGh"></script>
+		<script type="text/javascript" src="http://echarts.baidu.com/resource/echarts-gl-latest/dist/echarts-gl.min.js"></script>
+		<script type="text/javascript" src="http://gallerybox.echartsjs.com/dep/echarts/latest/extension/bmap.min.js"></script>
+		<script type="text/javascript" src="http://gallery.echartsjs.com/dep/echarts/map/js/world.js"></script>
+		<script>
+		$(function(){
+			height=$("body").height();
+			//左侧高度
+			$(".list").height(height-(178));
+		})
+			
+		</script>
+	</head>
+	<body>
+		<div class="container-fluid" style="padding: 0;">
+		<!--header-->
+			<header class="hearder clearfix">
+				<div class="row">
+					<div class="pull-left logo">
+						<img src="img/logo.png" width="210" height="46" />
+					</div>
+					<h1 class="pull-left title">智慧畜牧精准扶贫服务平台</h1>
+					<div class="login pull-right">
+						<i><img src="img/uesrname.png"></i><span>欢迎您</span><em>|</em><span>李美梅</span><a href="#" class="btn text-center bottom">退出</a>
+					</div>
+				
+				</div>
+			</header>
+			<div class="clearfix z-border"></div>
+			<!--主题内容-->
+			<!--导航-->
+			<div class="navBox">
+				<nav class="clearfix">
+					<li class="pull-left"><a href="牧场概览.html"><i><img src="img/nav1.png" width="26" height="18"></i>牧场概览</a><i></i></li>
+					<li class="pull-left"><a href="电子围栏.html"><i><img src="img/nav2.png" width="16" height="17"></i>电子围栏</a><i></i></li>
+					<li class="pull-left active"><a href="轨迹回放.html"><i><img src="img/nav3.png" width="26" height="18"></i>轨迹回放</a><i></i></li>
+					<li class="pull-left"><a href="消息中心.html"><i><img src="img/nav4.png" width="18" height="18"></i>消息中心</a><i></i></li>
+				</nav>
+			</div>
+			<div class="containerBox">
+				<div class="row">
+					<div class="cBoxLeft orbit newcenter col-lg-2">
+						<ul class="list">
+							<li>
+								<h2>今日新增</h2>
+								<div class="listitem">
+									<span>最大行走步数</span>
+									<strong>5620000</strong>
+									<span>步</span>
+								</div>
+								<div class="listitem">
+									<span>最小行走步数</span>
+									<strong>568400</strong>
+									<span>步</span>
+								</div>
+								<div class="listitem">
+									<span>最大行走距离</span>
+									<strong>586200</strong>
+									<span>米</span>
+								</div>
+								<div class="listitem">
+									<span>最大行走距离</span>
+									<strong>586200</strong>
+									<span>米</span>
+								</div>
+								<div class="listitem">
+									<span>最小行走距离</span>
+									<strong>450000</strong>
+									<span>米</span>
+								</div>
+								<div class="listitem">
+									<span>最大消耗卡路里</span>
+									<strong>560000</strong>
+									<span>卡</span>
+								</div>
+								<div class="listitem">
+									<span>最小消耗卡路里</span>
+									<strong>23000</strong>
+									<span>卡</span>
+								</div>
+							</li>
+							<li>
+								<h2>历史累计</h2>
+								<div class="listitem">
+									<span>最大行走步数</span>
+									<strong>5620000</strong>
+									<span>步</span>
+								</div>
+								<div class="listitem">
+									<span>最小行走步数</span>
+									<strong>568400</strong>
+									<span>步</span>
+								</div>
+								<div class="listitem">
+									<span>最大行走距离</span>
+									<strong>586200</strong>
+									<span>米</span>
+								</div>
+								<div class="listitem">
+									<span>最大行走距离</span>
+									<strong>586200</strong>
+									<span>米</span>
+								</div>
+								<div class="listitem">
+									<span>最小行走距离</span>
+									<strong>450000</strong>
+									<span>米</span>
+								</div>
+								<div class="listitem">
+									<span>最大消耗卡路里</span>
+									<strong>560000</strong>
+									<span>卡</span>
+								</div>
+								<div class="listitem">
+									<span>最小消耗卡路里</span>
+									<strong>23000</strong>
+									<span>卡</span>
+								</div>
+							</li>
+							<li style="border-bottom: none;"><p>最后刷新时间：2016/06/16 19:00</p></li>
+						</ul>
+					</div>
+					<div class="cBoxLeft col-lg-10">
+						<div class="mapBox">
+							<div class="maplistb" style="padding: 0;">
+								<form class="inabout clearfix" style="padding-left: 4%; top:6%; z-index: 9; position: absolute;">
+								<select class=" pull-left select">
+									<option>请选择省</option>
+									<option>山东省</option>
+									<option>河北省</option>
+									<option>山西省</option>
+								</select>
+								<select class=" pull-left select">
+									<option>请选择市</option>
+									<option>北京市</option>
+									<option>上海市</option>
+									<option>无锡市</option>
+								</select>
+								<div class="pull-left btnsub input-group" style="width: 192px;">
+						          <input type="text" class="form-control" value="请输入要搜索的地区" aria-label="Text input with multiple buttons">
+						          <div class="input-group-btn">
+						            <button type="button" class="btn"><i class="glyphicon glyphicon-search"></i></button>
+						          </div>
+						        </div>
+						        <select class="pull-left select" style="width: 215px; margin-left: 10px;">
+									<option>2017-05-13至2017-05-20</option>
+									<option>2017-05-20至2017-05-30</option>
+									<option>2017-05-13至2017-05-20</option>
+									<option>2017-05-13至2017-05-20</option>
+								</select>
+							</form>
+							
+							<div class="maplist" style="margin: 0;">
+								<div class="map0" id="map2" style="width: 100%;">
+									
+								</div>
+								
+								<div style="position: relative; margin-top: 20px;">
+								<form class="inabout clearfix" style="padding-left: 4%; top:6%; z-index: 9; position: absolute;">
+									<select class="pull-left select" style="width: 215px; margin-left: 10px;">
+										<option>2017-05-13至2017-05-20</option>
+										<option>2017-05-20至2017-05-30</option>
+										<option>2017-05-13至2017-05-20</option>
+										<option>2017-05-13至2017-05-20</option>
+									</select>
+								</form>
+									<div class="map0" id="map3" style="width: 100%;">
+										
+									</div>
+								
+								</div>
+									
+								
+								
+							</div>
+							
+							
+							
+						</div>
+					
+					</div>
+				</div>
+			</div>
+			
+			
+		</div>
+	
+	<footer class="text-center">
+		基于O2O大数据的智慧畜牧 iM Copyright © 2016-2018 All Rights Reserved. 中国电信股份有限公司北京研究院 版权所有 
+	</footer>
+	<style>
+		.anchorBL{
+			display: none;
+		}
+	</style>
+	<script>
+		$(function(){
+			//地图
+			function chart02(){
+				var myChart = echarts.init(document.getElementById('map3'));
+				var uploadedDataURL = "js/data-1469162638978-rJDcVXku.json";
+
+				myChart.showLoading();
+				
+				$.getJSON(uploadedDataURL, function(data) {
+				
+				    myChart.hideLoading();
+				
+				    function getAirportCoord(idx) {
+				        return [data.airports[idx][3], data.airports[idx][4]];
+				    }
+				    var routes = data.routes.map(function (airline) {
+				        return [
+				            getAirportCoord(airline[1]),
+				            getAirportCoord(airline[2])
+				        ];
+				    });
+				
+				    myChart.setOption({
+				        geo3D: {
+				            map: 'world',
+				            shading: 'realistic',
+				            silent: true,
+				            environment: '#333',
+				            realisticMaterial: {
+				                roughness: 0.8,
+				                metalness: 0
+				            },
+				            postEffect: {
+				                enable: true
+				            },
+				            groundPlane: {
+				                show: false
+				            },
+				            light: {
+				                main: {
+				                    intensity: 1,
+				                    alpha: 30
+				                },
+				                ambient: {
+				                    intensity: 0
+				                }
+				            },
+				            viewControl: {
+				                distance: 70,
+				                alpha: 89,
+				                
+				                panMouseButton: 'left',
+				                rotateMouseButton: 'right'
+				            },
+				
+				            itemStyle: {
+				                areaColor: '#000'
+				            },
+				
+				            regionHeight: 0.5
+				        },
+				        series: [{
+				            type: 'lines3D',
+				
+				            coordinateSystem: 'geo3D',
+				
+				            effect: {
+				                show: true,
+				                trailWidth: 1,
+				                trailOpacity: 0.5,
+				                trailLength: 0.2,
+				                constantSpeed: 5
+				            },
+				
+				            blendMode: 'lighter',
+				
+				            lineStyle: {
+				                width: 0.2,
+				                opacity: 0.05
+				            },
+				
+				            data: routes
+				        }]
+				    });
+				    
+				    window.addEventListener('keydown', function () {
+				        myChart.dispatchAction({
+				            type: 'lines3DToggleEffect',
+				            seriesIndex: 0
+				        });
+				    });
+				});
+				
+			};
+			
+			chart02();
+			
+			
+			
+			function chart01(){
+				var myChart = echarts.init(document.getElementById('map2'));
+				$.get('js/lines-bus.json', function(data) {
+			    var hStep = 300 / (data.length - 1);
+			    var busLines = [].concat.apply([], data.map(function (busLine, idx) {
+			        var prevPt;
+			        var points = [];
+			        for (var i = 0; i < busLine.length; i += 2) {
+			            var pt = [busLine[i], busLine[i + 1]];
+			            if (i > 0) {
+			                pt = [
+			                    prevPt[0] + pt[0],
+			                    prevPt[1] + pt[1]
+			                ];
+			            }
+			            prevPt = pt;
+			
+			            points.push([pt[0] / 1e4, pt[1] / 1e4]);
+			        }
+			        return {
+			            coords: points,
+			            lineStyle: {
+			                normal: {
+			                    color: echarts.color.modifyHSL('#5A94DF', Math.round(hStep * idx))
+			                }
+			            }
+			        };
+			    }));
+		    myChart.setOption(option = {
+		        bmap: {
+            center: [116.46, 39.92],
+            zoom: 10,
+            roam: true,
+            mapStyle: {
+              'styleJson': [
+                {
+                  'featureType': 'water',
+                  'elementType': 'all',
+                  'stylers': {
+                    'color': '#031628'
+                  }
+                },
+                {
+                  'featureType': 'land',
+                  'elementType': 'geometry',
+                  'stylers': {
+                    'color': '#000102'
+                  }
+                },
+                {
+                  'featureType': 'highway',
+                  'elementType': 'all',
+                  'stylers': {
+                    'visibility': 'off'
+                  }
+                },
+                {
+                  'featureType': 'arterial',
+                  'elementType': 'geometry.fill',
+                  'stylers': {
+                    'color': '#000000'
+                  }
+                },
+                {
+                  'featureType': 'arterial',
+                  'elementType': 'geometry.stroke',
+                  'stylers': {
+                    'color': '#0b3d51'
+                  }
+                },
+                {
+                  'featureType': 'local',
+                  'elementType': 'geometry',
+                  'stylers': {
+                    'color': '#000000'
+                  }
+                },
+                {
+                  'featureType': 'railway',
+                  'elementType': 'geometry.fill',
+                  'stylers': {
+                    'color': '#000000'
+                  }
+                },
+                {
+                  'featureType': 'railway',
+                  'elementType': 'geometry.stroke',
+                  'stylers': {
+                    'color': '#08304b'
+                  }
+                },
+                {
+                  'featureType': 'subway',
+                  'elementType': 'geometry',
+                  'stylers': {
+                    'lightness': -70
+                  }
+                },
+                {
+                  'featureType': 'building',
+                  'elementType': 'geometry.fill',
+                  'stylers': {
+                    'color': '#000000'
+                  }
+                },
+                {
+                  'featureType': 'all',
+                  'elementType': 'labels.text.fill',
+                  'stylers': {
+                    'color': '#857f7f'
+                  }
+                },
+                {
+                  'featureType': 'all',
+                  'elementType': 'labels.text.stroke',
+                  'stylers': {
+                    'color': '#000000'
+                  }
+                },
+                {
+                  'featureType': 'building',
+                  'elementType': 'geometry',
+                  'stylers': {
+                    'color': '#022338'
+                  }
+                },
+                {
+                  'featureType': 'green',
+                  'elementType': 'geometry',
+                  'stylers': {
+                    'color': '#062032'
+                  }
+                },
+                {
+                  'featureType': 'boundary',
+                  'elementType': 'all',
+                  'stylers': {
+                    'color': '#465b6c'
+                  }
+                },
+                {
+                  'featureType': 'manmade',
+                  'elementType': 'all',
+                  'stylers': {
+                    'color': '#022338'
+                  }
+                },
+                {
+                  'featureType': 'label',
+                  'elementType': 'all',
+                  'stylers': {
+                    'visibility': 'off'
+                  }
+                }
+              ]
+            }
+        },
+		        series: [{
+            type: 'lines',
+            coordinateSystem: 'bmap',
+            polyline: true,
+            data: busLines,
+            silent: true,
+            lineStyle: {
+                normal: {
+                    // color: '#c23531',
+                    // color: 'rgb(200, 35, 45)',
+                    opacity: 0.2,
+                    width: 1
+                }
+            },
+            progressiveThreshold: 500,
+            progressive: 200
+        }, {
+            type: 'lines',
+            coordinateSystem: 'bmap',
+            polyline: true,
+            data: busLines,
+            lineStyle: {
+                normal: {
+                    width: 0
+                }
+            },
+            effect: {
+                constantSpeed: 20,
+                show: true,
+                trailLength: 0.1,
+                symbolSize: 1.5
+            },
+            zlevel: 1
+        }]
+		    });
+		});
+			
+			};
+			
+			chart01();
+			
+			
+    	 
+		})
+	
+	</script>
+	</body>
+</html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>牧场概览</title>
+		<link rel="stylesheet" href="js/bootstrap-fileinput-master20151222/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="css/comm.css" />
+		<link rel="stylesheet" href="css/index.css" />
+		<script type="text/javascript" src="js/bootstrap-fileinput-master20151222/js/jquery-2.0.3.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap-fileinput-master20151222/js/bootstrap.min.js" ></script>
+		<script type="text/javascript" src="js/echarts.min.js" ></script>
+		<script type="text/javascript" src="js/china.js" ></script>
+		<script type="text/javascript" src="js/index.js" ></script>
+		<script type="text/javascript" src="http://gallery.echartsjs.com/dep/echarts/map/js/china.js"></script>
+		<script type="text/javascript" src="js/heilongjiang.js" ></script>
+		<script>
+		$(function(){
+			height=$("body").height();
+			//左侧高度
+			$(".list").height(height-(78+58+52));
+		})
+			
+		</script>
+		<style>
+			.containerBox ul.list li{
+				height: auto;
+			}
+			.btnBox{
+				position: absolute;
+				right: 0px;
+				top:14px;
+				height: 100px;
+			}
+			.btnBox .btn{
+				height: 24px;
+				border: #1968ab solid 1px;
+				border-radius:15px;
+				padding: 0 25px;
+				color: #ffffff;
+				background: none;
+				margin: 0 10px;
+			}
+			.btnBox .btn.active{
+				background-color: #1968ab;
+				color: #ffffff;
+			}
+			.btn:active{
+				border: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container-fluid" style="padding: 0;">
+		<!--header-->
+			<header class="hearder clearfix">
+				<div class="row">
+					<div class="pull-left logo">
+						<img src="img/logo.png" width="210" height="46" />
+					</div>
+					<h1 class="pull-left title">智慧畜牧精准扶贫服务平台</h1>
+					<div class="login pull-right">
+						<i><img src="img/uesrname.png"></i><span>欢迎您</span><em>|</em><span>李美梅</span><a href="#" class="btn text-center bottom">退出</a>
+					</div>
+				
+				</div>
+			</header>
+			<div class="clearfix z-border"></div>
+			<!--主题内容-->
+			<!--导航-->
+			<div class="navBox">
+				<nav class="clearfix">
+					<li class="pull-left active"><a href="牧场概览.html"><i><img src="img/nav1.png" width="26" height="18"></i>牧场概览</a><i></i></li>
+					<li class="pull-left"><a href="电子围栏.html"><i><img src="img/nav2.png" width="16" height="17"></i>电子围栏</a><i></i></li>
+					<li class="pull-left"><a href="轨迹回放.html"><i><img src="img/nav3.png" width="26" height="18"></i>轨迹回放</a><i></i></li>
+					<li class="pull-left"><a href="消息中心.html"><i><img src="img/nav4.png" width="18" height="18"></i>消息中心</a><i></i></li>
+				</nav>
+			</div>
+			<div class="containerBox">
+				<div class="row">
+					<div class="cBoxLeft col-lg-3">
+						<ul class="list">
+							<li>
+								<p>牧场总数</p>
+								<p class="clearfix">
+									<em>10000</em>个 <span class="pull-right"><i class="glyphicon glyphicon-arrow-up"></i>5.6%</span></p>
+							
+								<div id="pie" style="width: 300px;height: 300px;"></div>
+							</li>
+							<li>
+								<p>牧户总数</p>
+								<p class="clearfix">
+									<em>256000</em>户 <span class="pull-right"><i class="glyphicon glyphicon-arrow-down"></i>1.6%</span></p>
+								
+								<div id="img"  style="width: 320px; height: 150px;">
+									<img src="img/1.png" width="320px" height="150px" />
+								</div>
+							</li>
+							<li style="padding-bottom: 14px;">
+								<p>牲畜总数</p>
+								<p class="clearfix">
+									<em>156000</em>头 <span class="pull-right"><i class="glyphicon glyphicon-arrow-down"></i>0.6%</span></p>
+							</li>
+							<li>
+								<div style="width: 340px; height: 200px;padding-bottom: 20px; padding-left: 0; padding-top: 0px;" class="minBox" id="mBox"></div>
+							</li>
+							<li style="padding: 10px 0;"><p>最后刷新时间：2016/06/16 19:00</p></li>
+						</ul>
+					</div>
+					<div class="cBoxLeft col-lg-9">
+						<div class="mapBox">
+							<div class="maplistb">
+								<form class="inabout clearfix">
+								<label style="font-size: 16px;" class="pull-left">热力地图</label>
+								<select class=" pull-left select">
+									<option>请选择省</option>
+									<option>山东省</option>
+									<option>河北省</option>
+									<option>山西省</option>
+								</select>
+								<select class=" pull-left select">
+									<option>请选择市</option>
+									<option>北京市</option>
+									<option>上海市</option>
+									<option>无锡市</option>
+								</select>
+								<div class="pull-left btnsub input-group" style="width: 200px;">
+						          <input type="text" value="请输入要搜索的地区" class="form-control" aria-label="Text input with multiple buttons">
+						          <div class="input-group-btn">
+						            <button type="button" class="btn"><i class="glyphicon glyphicon-search"></i></button>
+						          </div>
+						        </div>
+							</form>
+							
+							<div class="maplist">
+								<div class="map0" id="map0">
+									
+								</div>
+								<dl class="listnumber">
+										<dt class="pull-left clearfix"><i></i>各省牲畜数排名</dt>
+										<dd class="pull-left"><i style="background-color: #e5b28a;">1</i><span>广东省</span></dd>
+										<dd class="pull-left"><i style="background-color: #df9b7f;">2</i><span>河北省</span></dd>
+										<dd class="pull-left"><i style="background-color: #f2df9f;">3</i><span>贵州省</span></dd>
+										<dd class="pull-left"><i style="background-color: #e5b28a;">4</i><span>吉林省</span></dd>
+										<dd class="pull-left"><i style="background-color: #e5b28a;">5</i><span>江西省</span></dd>
+										<dd class="pull-left"><i style="background-color: #e5b28a;">6</i><span>福建省</span></dd>
+										<dd class="pull-left"><i style="background-color: #e5b28a;">7</i><span>安徽省</span></dd>
+										<dd class="pull-left"><i style="background-color: #e5b28a;">8</i><span>广西省</span></dd>
+										<dd class="pull-left"><i style="background-color: #e5b28a;">9</i><span>甘肃省</span></dd>
+										<dd class="pull-left"><i style="background-color: #e5b28a;">10</i><span>河南省</span></dd>
+									</dl>
+								
+								</div>
+							</div>
+							
+							<div class="maplistb" style="position: relative;">
+								<form class="inabout clearfix">
+								<label class="pull-left">全国所有省排名</label>
+								<select class=" pull-left select">
+									<option>请选择省</option>
+									<option>山东省</option>
+									<option>河北省</option>
+									<option>山西省</option>
+								</select>
+								<select class=" pull-left select">
+									<option>请选择市</option>
+									<option>北京市</option>
+									<option>上海市</option>
+									<option>无锡市</option>
+								</select>
+								<div class="pull-left btnsub input-group" style="width: 192px;">
+						          <input type="text" class="form-control" value="请输入要搜索的地区" aria-label="Text input with multiple buttons">
+						          <div class="input-group-btn">
+						            <button type="button" class="btn"><i class="glyphicon glyphicon-search"></i></button>
+						          </div>
+						        </div>
+							</form>
+							<div class="btnBox">
+								<button type="button" class="btn active">牲畜</button>
+								<button type="button" class="btn">牧户</button>
+								<button type="button" class="btn">牧场</button>
+							</div>
+							
+							<div class="maplist">
+								<div class="map0" id="map10" style="height: 380px; width: 100%;">
+									
+								</div>
+								
+								
+								</div>
+							</div>
+							
+							
+							
+						</div>
+					
+					</div>
+				</div>
+			</div>
+			
+			
+		</div>
+	
+	<footer class="text-center">
+		基于O2O大数据的智慧畜牧 iM Copyright © 2016-2018 All Rights Reserved. 中国电信股份有限公司北京研究院 版权所有 
+	</footer>
+	
+	<script>
+	function chart03(){
+				var myChart = echarts.init(document.getElementById('pie'));
+				option = {
+				    backgroundColor: '',
+				    tooltip: {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b}: {c} ({d}%)",
+				
+				    },
+				    series: [
+				        {
+				            name:'访问来源',
+				            type:'pie',
+				            hoverAnimation: false,
+				            legendHoverLink:false,
+				            radius: ['40%', '42%'],
+				            color: ['#915872', '#3077b7', '#9a8169', '#3f8797'],
+				            label: {
+				                normal: {
+				                    position: 'inner'
+				                }
+				            },
+				            labelLine: {
+				                normal: {
+				                    show: false
+				                },
+				               
+				            },
+				            tooltip: {
+				               show:false,
+				               
+				               
+				            },
+				            
+				            data:[
+				                {value:435, name:''},
+				                {value:679, name:''},
+				                {value:848, name:''},
+				                 {value:348, name:''}
+				            ]
+				        },
+				        {
+				            name:'访问来源',
+				            type:'pie',
+				            radius: ['42%', '55%'],
+				            color: ['#d74e67', '#0092ff', '#eba954', '#21b6b9'],
+				            label: {
+				                normal: {
+				                    formatter: '{b}\n{d}%'
+				                },
+				          
+				            },
+				            data:[
+				                {value:435, name:'2D线'},
+				                {value:679, name:'3D线'},
+				                {value:848, name:'资源类'},
+				                {value:348, name:'采集类'},
+				            ]
+				        }
+				    ]
+				};
+				
+				myChart.setOption(option);
+				
+			};
+			
+			chart03();
+			
+			
+			
+function chart04(){
+				var myChart = echarts.init(document.getElementById('map10'));
+				option = {
+					    tooltip : {
+					        trigger: 'axis'
+					    },
+ 					    
+					    grid: {
+					        left: '3%',
+					        right: '4%',
+					        bottom: '3%',
+					        top:'4%',
+					        containLabel: true
+					    },
+					    xAxis : [
+					        {
+					            type : 'category',
+					            boundaryGap : false,
+					            data : ['河北','天津','北京','辽宁','山东','青海','西藏','宁夏','湖南','山西','重庆']
+					       		,
+					       		 axisLabel: {
+                                show: true,
+                                textStyle: {
+                                    color: '#9fa19e'
+                                	}
+                            	}
+					        }
+					    ],
+					    yAxis : [
+					        {
+					            type : 'value',
+					            splitLine:{  
+						            show:true  ,
+						             lineStyle:{
+									    color:'#2f3f6c',
+									    width: 1
+									    }
+							    },
+					             axisLabel: {
+                                show: true,
+                                textStyle: {
+                                    color: '#9fa19e'
+                                }
+                            }
+					        }
+					    ],
+					    series : [
+					        {
+					            name:'总数(只)',
+					            type:'line',
+					            stack: '总量',
+					            itemStyle:{
+					            	normal: {
+					            		color:'#5397d5',
+					            		lineStyle:{
+					            			color:'#2b4268'
+					            		}
+					            	}
+					            },
+					            areaStyle: {normal: {
+					            	lineStyle:{
+					            			color:'#5397d5'
+					            		}
+					            }},
+					            data:[80,75,80,70,75,40, 30, 20, 40, 10, 2]
+					        }
+					    ]
+					};
+				myChart.setOption(option);
+				
+			};
+			
+			chart04();
+	
+	</script>
+	</body>
+</html>

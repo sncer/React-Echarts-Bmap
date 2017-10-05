@@ -1,0 +1,27 @@
+@charset "utf-8";
+/* CSS Document */
+*{
+	font-family: "Microsoft YaHei";
+	font-size: 14px;
+}
+body,p,ul,ol,li,dl,dt,dd,h1,h2,h3,h4,h5,h6,hr,blockquote,object,iframe,fieldset,input,legend,form{margin:0;padding:0; font-family: "Microsoft YaHei";}
+ul,ol,li{list-style:none}
+img{border:none}
+.html{overflow: hidden;}
+a:link {outline:none}/* 未被访问的链接 */
+/*common*/
+button,select{cursor:pointer; outline:none;}
+textarea{ resize:none;outline:none;}
+.btn{ border:none; text-align:center; color:#fff;}
+h1,h2,h3,h4,h5,h6{font-weight:normal}
+i,b,em{font-style:normal;font-weight:normal}
+th{font-weight:normal}
+input{ outline:none; font-size:12px; line-height:14px;}
+
+.clearfix:before,.clearfix:after{content:"";display:block;overflow:hidden;visibility:hidden;font-size:0;line-height:0;width:0;height:0}
+.clearfix:after{clear:both}
+.clearfix{zoom:1}
+a:hover{
+	text-decoration: none;
+}
+
