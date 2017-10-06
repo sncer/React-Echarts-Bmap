@@ -31,6 +31,8 @@
 		em{
 			color: #3974a8;
     		margin: 0 4px;
+    		font-style: normal;
+    		font-weight: bold;
 		}
 		.logout_btn{
 			margin-left: 10px;
@@ -39,8 +41,8 @@
 		    width: 80px;
 			border: #194b78 solid 1px;
     		border-radius: 13px;
-		    
 		    background-color: transparent;
+		    
 		}
 	}
 	&:after{

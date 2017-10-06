@@ -7,6 +7,11 @@ import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/title';
 
 class PieChart extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+        };
+    }
 	componentDidMount() {
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('pieChart'));
@@ -38,13 +43,7 @@ class PieChart extends Component {
                    show:false,
                    
                 },
-                
-                data:[
-                    {value:335, name:''},
-                    {value:310, name:''},
-                    {value:234, name:''},
-                    {value:135, name:''}
-                ]
+                data: this.getInnerData(this.props.data)
             },
                 {
                     name:'牧场分类',
@@ -62,17 +61,23 @@ class PieChart extends Component {
                             show: true
                         }
                     },
-                    data:[
-                        {value:335, name:'春牧场'},
-                        {value:310, name:'夏牧场'},
-                        {value:234, name:'秋牧场'},
-                        {value:135, name:'冬牧场'}
-                    ]
+                    data: this.props.data
                 }
             ]
         };
         // 绘制图表
         myChart.setOption(option);
+    }
+    getInnerData(data){
+        let temp = [];
+        for (var i = 0; i < data.length; i++) {
+            temp.push({
+                name: '',
+                value: data[i].value
+            })
+        }
+        console.log(temp)
+        return temp;
     }
 	render() {
         return (

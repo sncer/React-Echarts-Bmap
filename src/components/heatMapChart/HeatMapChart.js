@@ -32,26 +32,26 @@ class HeatMapChart extends Component {
             tooltip: {
                 trigger: 'item'
             },
-            legend: {
-                orient: 'vertical',
-                left: 'right',
-                data:['全国'],
-                textStyle:{
-                    color: "white"
-                    
-                },
-            },
             visualMap: {
+                type: 'piecewise',
                 min: 0,
-                max: 2500,
-                left: 'left',
-                top: 'bottom',
-                text: ['高','低'],           // 文本，默认为数值文本
-                textStyle:{
-                    color: "white"
-                    
+                max: 1000,
+                left: 100,
+                bottom: 50,
+                itemGap: 0,
+                itemWidth: 40,
+                itemHeight: 16,
+                padding: 0,
+                text: ['高','低'],
+                splitNumber: 5, 
+                inRange: {
+                    color: ['#45c8dc','#3ca0b7','#327992','#2b5a74','#25425f'].reverse(),
+                    symbol: 'rect',
                 },
-                calculable: true
+                textStyle: {
+                    color: '#47d1e3',
+                },
+
             },
             series: [
                 {
@@ -64,7 +64,19 @@ class HeatMapChart extends Component {
                             show: true
                         },
                         emphasis: {
-                            show: false
+                            show: false,
+                            color: '#fff'
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            borderColor: '#202b49',
+                            borderWidth: 1
+                        },
+                        emphasis: {
+                            areaColor: '#389BB7',
+                            borderColor: '#389BB7',
+                            borderWidth: 0
                         }
                     },
                     data:[
