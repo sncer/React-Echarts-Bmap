@@ -6,7 +6,7 @@ import  'echarts/lib/chart/pie';
 import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/title';
 
-class PieChart extends Component {
+class PasturePieChart extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -14,7 +14,7 @@ class PieChart extends Component {
     }
 	componentDidMount() {
         // 基于准备好的dom，初始化echarts实例
-        var myChart = echarts.init(document.getElementById('pieChart'));
+        var myChart = echarts.init(document.getElementById('pasturePieChart'));
         var option = {
             tooltip: {
                 trigger: 'item',
@@ -81,9 +81,9 @@ class PieChart extends Component {
     }
 	render() {
         return (
-            <div id="pieChart" style={{ width: '100%', height: '200px' }}></div>
+            <div id="pasturePieChart" style={{ width: '100%', height: '200px' }}></div>
         );
     }
 }
 
-export default PieChart;
+export default PasturePieChart;

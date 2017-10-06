@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Sum from '../../components/sum/Sum';
-import PieChart from '../../components/pieChart/PieChart';
+import PasturePieChart from '../../components/pasturePieChart/PasturePieChart';
 import PictorialBarChart from '../../components/pictorialBarChart/PictorialBarChart';
 import HeatMapChart from '../../components/heatMapChart/HeatMapChart';
 import RankLineChart from '../../components/rankLineChart/RankLineChart';
@@ -16,21 +16,18 @@ export class Overview extends Component {
             sumData:{
             	pasture:{
             		number: 100000,
-            		unit: '个',
             		percent: 5.6,
             	},
             	herdsman:{
             		number: 256000,
-            		unit: '户',
             		percent: -1.6,
             	},
             	livestock:{
             		number: 156000,
-            		unit: '头',
             		percent: -0.6,
             	}
             },
-            pieChartData:[
+            pasturePieChart:[
             	{value:335, name:'春牧场'},
                 {value:310, name:'夏牧场'},
                 {value:234, name:'秋牧场'},
@@ -71,14 +68,14 @@ export class Overview extends Component {
 					<section className="sum_section">
 						<div className="sum">
 							<div className="title">牧场总数</div>
-							<Sum data={this.state.sumData.pasture} />
+							<Sum data={this.state.sumData.pasture} unit={'个'} />
 						</div>
-						<PieChart data={this.state.pieChartData} />
+						<PasturePieChart data={this.state.pasturePieChart} />
 					</section>
 					<section className="sum_section">
 						<div className="sum">
 							<div className="title">牧户总数</div>
-							<Sum data={this.state.sumData.herdsman} />
+							<Sum data={this.state.sumData.herdsman} unit={'户'} />
 						</div>
 						<div className="img-wrap">
 							<img src={povertyImg} alt=""/>
@@ -87,7 +84,7 @@ export class Overview extends Component {
 					<section className="sum_section">
 						<div className="sum">
 							<div className="title">畜牧总数</div>
-							<Sum data={this.state.sumData.livestock} />
+							<Sum data={this.state.sumData.livestock} unit={'头'} />
 						</div>
 					</section>
 					<section className="sum_section">

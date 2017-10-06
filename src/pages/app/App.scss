@@ -14,7 +14,7 @@
 			border-right: #757988 solid 1px;
 			display: flex;
 			flex-direction:column;
-			.sum_section{
+			section{
 				width: 100%;
 				padding: 15px 30px;
 				border-bottom: #32426f solid 1px;
@@ -23,10 +23,16 @@
 					font-size: 14px;
 				}
 			}
+
 		}
 		.right{
 			flex:1;
 			background-color: #182535;
+		}
+		.ec-extension-bmap{
+			.anchorBL{
+				display: none;
+			}
 		}
 	}
 

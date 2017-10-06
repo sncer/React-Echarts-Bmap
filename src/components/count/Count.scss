@@ -1,0 +1,23 @@
+.component_count{
+		display:flex;
+		justify-content: space-between;
+		align-items: center;
+	
+	.number{
+		width: 120px;
+		strong{
+			font-size: 24px;
+    		color: #45c8dc;
+    		font-weight: normal;
+		}
+	}
+	.percent i{
+		padding-right: 5px;
+	}
+	.percent.increase{
+		color: #ac585c;
+	}
+	.percent.decrease{
+		color: #95b64b;
+	}
+}

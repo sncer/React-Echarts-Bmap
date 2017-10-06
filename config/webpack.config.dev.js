@@ -107,6 +107,18 @@ module.exports = {
       // We are waiting for https://github.com/facebookincubator/create-react-app/issues/2176.
       // { parser: { requireEnsure: false } },
 
+      //通过expose-loader全局引入jquery
+      {
+          test: require.resolve('jquery'),
+          use: [{
+              loader: 'expose-loader',
+              options: 'jQuery'
+          },{
+              loader: 'expose-loader',
+              options: '$'
+          }]
+      },
+
       // First, run the linter.
       // It's important to do this before Babel processes the JS.
       {
