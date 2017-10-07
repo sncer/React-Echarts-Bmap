@@ -5,7 +5,7 @@ import echarts from 'echarts/lib/echarts';
 import  'echarts/lib/chart/pie';
 import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/title';
-
+let myChart,option;
 class PasturePieChart extends Component {
     constructor(props){
         super(props);
@@ -14,8 +14,8 @@ class PasturePieChart extends Component {
     }
 	componentDidMount() {
         // 基于准备好的dom，初始化echarts实例
-        var myChart = echarts.init(document.getElementById('pasturePieChart'));
-        var option = {
+        myChart = echarts.init(document.getElementById('pasturePieChart'));
+        option = {
             tooltip: {
                 trigger: 'item',
                 formatter: "{a} <br/>{b}: {c} ({d}%)"
@@ -78,6 +78,9 @@ class PasturePieChart extends Component {
         }
         console.log(temp)
         return temp;
+    }
+    componentWillUnmount() {
+        myChart.dispose();
     }
 	render() {
         return (

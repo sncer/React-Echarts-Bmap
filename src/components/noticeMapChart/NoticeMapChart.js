@@ -420,7 +420,7 @@ class NoticeMapChart extends Component {
         myChart = echarts.init(document.getElementById('noticeMapChart'));
         option = {
             backgroundColor: '#404a59',
-            color: ['#d74e67', '#f4e925', '#ffa022', '#46bee9'],
+            color: ['#d74e67', '#f4e925', '#ffa022', '#46bee9', '#a6c84c'],
             tooltip: {
                 trigger: 'item'
             },
@@ -456,7 +456,7 @@ class NoticeMapChart extends Component {
                     name: '拆除',
                     type: 'effectScatter',
                     coordinateSystem: 'geo',
-                    data: convertData(data).slice(0, 50),
+                    data: convertData(data).slice(0, 5),
                     symbolSize: 16,
                     showEffectOn: 'render',
                     rippleEffect: {
@@ -485,7 +485,7 @@ class NoticeMapChart extends Component {
                     name: '围栏超限',
                     type: 'effectScatter',
                     coordinateSystem: 'geo',
-                    data: convertData(data).slice(51, 100),
+                    data: convertData(data).slice(65, 75),
                     symbolSize: 14,
                     showEffectOn: 'render',
                     rippleEffect: {
@@ -514,7 +514,7 @@ class NoticeMapChart extends Component {
                     name: '低电压',
                     type: 'effectScatter',
                     coordinateSystem: 'geo',
-                    data: convertData(data).slice(101, 150),
+                    data: convertData(data).slice(80, 90),
                     symbolSize: 12,
                     showEffectOn: 'render',
                     rippleEffect: {
@@ -541,15 +541,10 @@ class NoticeMapChart extends Component {
                 },
                 {
                     name: '高温警告',
-                    type: 'effectScatter',
+                    type: 'scatter',
                     coordinateSystem: 'geo',
-                    data: convertData(data).slice(151, 190),
+                    data: convertData(data).slice(100, 190),
                     symbolSize: 10,
-                    showEffectOn: 'render',
-                    rippleEffect: {
-                        brushType: 'stroke'
-                    },
-                    hoverAnimation: true,
                     label: {
                         normal: {
                             formatter: '{b}',
@@ -558,12 +553,6 @@ class NoticeMapChart extends Component {
                         },
                         emphasis: {
                             show: true
-                        }
-                    },
-                    itemStyle: {
-                        normal: {
-                            shadowBlur: 10,
-                            shadowColor: '#333'
                         }
                     },
                     zlevel: 1
@@ -578,6 +567,7 @@ class NoticeMapChart extends Component {
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize);
+        myChart.dispose();
     }
     onWindowResize(){
         myChart.resize();

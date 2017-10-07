@@ -8,57 +8,127 @@ import 'echarts/lib/component/visualMap';
 import 'echarts/lib/component/legend';
 import 'echarts/lib/component/title';
 // 引入中国地图（默认显示）
-import 'echarts/map/js/china'
+import 'echarts/map/js/china';
+// 引入全国344个市、区、州对应的数字编号
+import { CityMap, ProvinceMap, SpecialRegion } from '../../js/utils/global';
+// 引入jQuery（重要）
+import $ from 'jquery';
 
-let myChart,option;
+let myChart;
+//初始化绘制全国地图配置
+let option = {
+    title: {
+        text: '热力地图',
+        subtext: '全国',
+        textStyle: {
+            fontWeight: 'normal',
+            fontSize: 16,
+            color: 'white'
+        },
+        left: 20,
+        top: 10
+    },
+    tooltip: {
+        trigger: 'item'
+    },
+    visualMap: {
+        type: 'piecewise',
+        min: 0,
+        max: 1000,
+        left: 100,
+        bottom: 50,
+        itemGap: 0,
+        itemWidth: 40,
+        itemHeight: 16,
+        padding: 0,
+        text: ['高','低'],
+        splitNumber: 5, 
+        inRange: {
+            color: ['#45c8dc','#3ca0b7','#327992','#2b5a74','#25425f'].reverse(),
+            symbol: 'rect',
+        },
+        textStyle: {
+            color: '#47d1e3',
+        },
+        animationDuration:1000,
+        animationEasing:'cubicOut',
+        animationDurationUpdate:1000
+    },
+    
+};
 class HeatMapChart extends Component {
 	componentDidMount() {
-        function randomData() {
-            return Math.round(Math.random()*1000);
-        }
+        //用于存储全国的数据
+        var mapjson = [];
         // 基于准备好的dom，初始化echarts实例
         myChart = echarts.init(document.getElementById('heatMapChart'));
-        option = {
-            title: {
-                text: '热力地图',
-                textStyle: {
-                    fontWeight: 'normal',
-                    fontSize: 16,
-                    color: 'white'
-                },
-                left: 20,
-                top: 10
-            },
-            tooltip: {
-                trigger: 'item'
-            },
-            visualMap: {
-                type: 'piecewise',
-                min: 0,
-                max: 1000,
-                left: 100,
-                bottom: 50,
-                itemGap: 0,
-                itemWidth: 40,
-                itemHeight: 16,
-                padding: 0,
-                text: ['高','低'],
-                splitNumber: 5, 
-                inRange: {
-                    color: ['#45c8dc','#3ca0b7','#327992','#2b5a74','#25425f'].reverse(),
-                    symbol: 'rect',
-                },
-                textStyle: {
-                    color: '#47d1e3',
-                },
 
-            },
-            series: [
+        //绘制全国地图
+        $.getJSON( process.env.PUBLIC_URL + '/assets/map/china.json', function(json){
+            //生成Demo数据
+            var data = [];
+            for( var i = 0; i < json.features.length; i++ ){
+                data.push({
+                    name: json.features[i].properties.name,
+                    value: getRandomData()
+                })
+            }
+            mapjson = data;
+            //注册地图
+            echarts.registerMap('china', json);
+            //绘制地图
+            renderMap('china', data);
+        });
+
+        //地图点击事件
+        myChart.on('click', function (params) {
+            console.log( params );
+            if( params.name in ProvinceMap ){
+                //如果点击的是34个省、市、自治区，绘制选中地区的二级地图
+                $.getJSON( process.env.PUBLIC_URL + '/assets/map/province/' + ProvinceMap[params.name] +'.json', function(json){
+                    echarts.registerMap( params.name, json);
+                    var data = [];
+                    for( var i = 0; i < json.features.length; i++ ){
+                        data.push({
+                            name: json.features[i].properties.name,
+                            value: getRandomData()
+                        })
+                    }
+                    renderMap(params.name, data);
+                });
+            }else if( params.seriesName in ProvinceMap ){
+                //如果是 直辖市/特别行政区 只有二级下钻
+                if( SpecialRegion.indexOf( params.seriesName ) >= 0 ){
+                    renderMap('china',mapjson);
+                }else{
+                    //显示县级地图
+                    $.getJSON( process.env.PUBLIC_URL + '/assets/map/city/'+ CityMap[params.name] +'.json', function(json){
+                        echarts.registerMap( params.name, json);
+                        var data = [];
+                        for( var i=0;i<json.features.length;i++ ){
+                            data.push({
+                                name: json.features[i].properties.name,
+                                value: getRandomData()
+                            })
+                        }
+                        renderMap(params.name, data);
+                    }); 
+                }   
+            }else{
+                renderMap('china', mapjson);
+            }
+        });
+        function getRandomData() {
+            return Math.round(Math.random()*1000);
+        }
+        function renderMap(map, data){
+            option.title.subtext = map =='china'?'全国':map;
+            option.series = [ 
                 {
-                    name: '全国',
+                    name: map =='china'?'全国':map,
                     type: 'map',
-                    mapType: 'china',
-                    roam: true,
+                    mapType: map,
+                    roam: false,
                     label: {
                         normal: {
                             show: true
@@ -79,54 +149,22 @@ class HeatMapChart extends Component {
                             borderWidth: 0
                         }
                     },
-                    data:[
-                        {name: '北京',value: randomData() },
-                        {name: '天津',value: randomData() },
-                        {name: '上海',value: randomData() },
-                        {name: '重庆',value: randomData() },
-                        {name: '河北',value: randomData() },
-                        {name: '河南',value: randomData() },
-                        {name: '云南',value: randomData() },
-                        {name: '辽宁',value: randomData() },
-                        {name: '黑龙江',value: randomData() },
-                        {name: '湖南',value: randomData() },
-                        {name: '安徽',value: randomData() },
-                        {name: '山东',value: randomData() },
-                        {name: '新疆',value: randomData() },
-                        {name: '江苏',value: randomData() },
-                        {name: '浙江',value: randomData() },
-                        {name: '江西',value: randomData() },
-                        {name: '湖北',value: randomData() },
-                        {name: '广西',value: randomData() },
-                        {name: '甘肃',value: randomData() },
-                        {name: '山西',value: randomData() },
-                        {name: '内蒙古',value: randomData() },
-                        {name: '陕西',value: randomData() },
-                        {name: '吉林',value: randomData() },
-                        {name: '福建',value: randomData() },
-                        {name: '贵州',value: randomData() },
-                        {name: '广东',value: randomData() },
-                        {name: '青海',value: randomData() },
-                        {name: '西藏',value: randomData() },
-                        {name: '四川',value: randomData() },
-                        {name: '宁夏',value: randomData() },
-                        {name: '海南',value: randomData() },
-                        {name: '台湾',value: randomData() },
-                        {name: '香港',value: randomData() },
-                        {name: '澳门',value: randomData() }
-                    ]
-                }
-            ]
-        };
-        // 绘制图表
-        myChart.setOption(option);
+                    data: data,
+                }   
+            ];
+            //渲染地图
+            myChart.setOption(option);
+        }
 
         window.addEventListener("resize", this.onWindowResize);
         
     }
+
     componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize);
+        myChart.dispose();
     }
+    
     onWindowResize(){
         myChart.resize();
     }

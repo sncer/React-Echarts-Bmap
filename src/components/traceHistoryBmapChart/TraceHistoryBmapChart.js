@@ -80,6 +80,7 @@ class TraceHistoryBmapChart extends Component {
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize);
+        myChart.dispose();
     }
     onWindowResize(){
         myChart.resize();
