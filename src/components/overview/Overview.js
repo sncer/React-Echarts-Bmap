@@ -5,6 +5,8 @@ import PictorialBarChart from '../../components/pictorialBarChart/PictorialBarCh
 import HeatMapChart from '../../components/heatMapChart/HeatMapChart';
 import RankLineChart from '../../components/rankLineChart/RankLineChart';
 import RefreshTime from '../../components/refreshTime/RefreshTime';
+import CityPicker from '../../components/cityPicker/CityPicker';
+import AreaData from '../../js/utils/areaData.json';
 import './Overview.scss';
 import povertyImg from '../../img/poverty.png';
 
@@ -55,6 +57,9 @@ export class Overview extends Component {
             ]
         };
     }
+    handleCityPickerChange = (value) => {
+	    console.log(value)
+	  }
     changeRankIndex(index,e) {
     	
     	this.setState({
@@ -98,18 +103,9 @@ export class Overview extends Component {
 				<div className="right">
 					<div className="top">
 						<div className="select_bar">
-							<select>
-								<option>请选择省</option>
-								<option>山东省</option>
-								<option>河北省</option>
-								<option>山西省</option>
-							</select>
-							<select>
-								<option>请选择市</option>
-								<option>北京市</option>
-								<option>上海市</option>
-								<option>无锡市</option>
-							</select>
+							<CityPicker
+					          source={AreaData}
+					          onOptionChange={this.handleCityPickerChange} />
 						</div>
 						<div className="rank_list">
 							<div className="title"><i></i>各省牲畜数排名</div>
