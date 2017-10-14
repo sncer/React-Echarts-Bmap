@@ -1,56 +1,45 @@
   body {
-      background: #e0e8e0;
+      position: relative;
+      width:100%;
+      height: 100vh;
+      background: url(../../img/login_bg.png) no-repeat center center;
+      color: #333;
+      font-size: 14px;
+      font-family: "Microsoft YaHei";
+      cursor: default;
+      min-width: 1280px;
   }
 
   .login-box {
-      width: 50%;
-      background: #f7fafc;
-      margin: 100px auto;
-      padding: 50px 70px;
-      border-radius: 5px;
+      position: absolute;
+      top: 50%;
+      left:50%;
+      transform: translate(-50%,-50%);
       h1 {
-          color: #0066FF;
+          font-size: 30px;
+          color: #fff;
           text-align: center;
+          margin-bottom: 24px;
       }
-      .login-title {
-          font-size: 20px;
-          text-align: center;
-          margin-bottom: 20px;
-      }
-      form {
-          .form-group {
-              margin: 0;
-          }
-          .input-text {
-              label {
-                  display: inline-block;
-                  width: 15%;
-              }
-              input {
-                  display: inline-block;
-                  width: 80%;
-              }
-              .help-block {
-                  color: #e4393c;
-                  height: 20px;
-                  font-size: 12px;
-                  margin-left: 15%;
+      form{
+          width:376px;
+          height: 300px;
+          padding: 15px 0 20px;
+          background-color: #fff;
+          border-radius: 4px;
+          h2{
+            margin-top: 0;
+            height: 48px;
+            border-bottom: 1px solid #ccc;
+            text-align: center;
+            span{
+                display: inline-block;
+                height: 48px;
+                line-height: 48px;
+                border-bottom: 3px solid #3994e0;
+                font-size: 18px;
+                font-weight: 700;
               }
           }
       }
-  }
-
-  .check {
-      margin-left: 15%;
-      width: 40%
-  }
-
-  .check>span {
-      margin-left: 3%;
-  }
-
-  .login-btn {
-      margin-left: 15%;
-      width: 80%;
-      font-size: 16px;
   }
