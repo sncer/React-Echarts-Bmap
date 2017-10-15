@@ -113,6 +113,21 @@ class RankLineChart extends Component {
         window.addEventListener("resize", this.onWindowResize);
 
     }
+    componentWillReceiveProps(nextProps) {
+        option = {
+            title: {
+                text: '全国所有省排名',
+            },
+            xAxis: [{
+                data: this.getXAxisData(nextProps.data)
+            }],
+            series:  {
+                data: this.getYAxisData(nextProps.data)
+            }
+        };
+        // 绘制图表
+        myChart.setOption(option);
+    }
     componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize);
         myChart.dispose();

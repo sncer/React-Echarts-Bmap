@@ -9,8 +9,8 @@ import 'echarts/lib/component/legend';
 import 'echarts/lib/component/title';
 // 引入百度地图扩展
 import 'echarts/extension/bmap/bmap'
-// 引入全局变量
-import { BmapStyleJson } from '../../js/utils/global';
+// 引入百度地图自定义样式
+import BmapStyleJson from '../../js/utils/bmapStyle.json';
 
 let myChart,option;
 class FenceMapChart extends Component {

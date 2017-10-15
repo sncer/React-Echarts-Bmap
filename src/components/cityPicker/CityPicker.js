@@ -3,7 +3,7 @@ import React, {Component} from 'react'
 const Select = ({ name, value, handleChange, options }) => {
   return (
     <select name={name} value={value} onChange={handleChange}>
-      <option value="" disabled>请选择</option>
+      <option value="">请选择</option>
       {options.map(item => <Option key={item.code} option={item} />)}
     </select>
   )
@@ -18,8 +18,11 @@ class CityPicker extends Component {
     super(props)
     this.state = {
       province: '',
+      provinceName: '',
       city: '',
+      cityName: '',
       district: '',
+      districtName: '',
     }
   }
   
@@ -34,6 +37,7 @@ class CityPicker extends Component {
   }
   
   handleOptionChange = (e) => {
+    let selectedName = e.target.options[e.target.selectedIndex].text;
     const { onOptionChange } = this.props
     this.setState({
       [e.target.name]: e.target.value,
@@ -41,12 +45,22 @@ class CityPicker extends Component {
     if(e.target.name === 'province') {
       this.setState({
         city: '',
-        district: ''
+        district: '',
+        provinceName: selectedName,
+        cityName: '',
+        districtName: '',
       })
     }
     if(e.target.name === 'city') {
       this.setState({
-        district: ''
+        district: '',
+        cityName: selectedName,
+        districtName: '',
+      })
+    }
+    if(e.target.name === 'district'){
+      this.setState({
+        districtName: selectedName,
       })
     }
     setTimeout(()=>onOptionChange && onOptionChange(this.state), 0)

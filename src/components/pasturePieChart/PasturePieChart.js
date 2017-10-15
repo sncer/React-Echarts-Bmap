@@ -12,6 +12,20 @@ class PasturePieChart extends Component {
         this.state = {
         };
     }
+    componentWillReceiveProps(nextProps) {
+        option = {
+            series: [{
+                name:'demo',
+                data: this.getInnerData(nextProps.data)
+            },{
+                name:'牧场分类',
+                
+                data: nextProps.data
+            }]
+        };
+        // 绘制图表
+        myChart.setOption(option);
+    }
 	componentDidMount() {
         // 基于准备好的dom，初始化echarts实例
         myChart = echarts.init(document.getElementById('pasturePieChart'));
@@ -20,9 +34,8 @@ class PasturePieChart extends Component {
                 trigger: 'item',
                 formatter: "{a} <br/>{b}: {c} ({d}%)"
             },
-            series: [
-            {
-                name:'牧场分类',
+            series: [{
+                name:'demo',
                 type:'pie',
                 hoverAnimation: false,
                 legendHoverLink:false,
@@ -44,26 +57,24 @@ class PasturePieChart extends Component {
                    
                 },
                 data: this.getInnerData(this.props.data)
-            },
-                {
-                    name:'牧场分类',
-                    type:'pie',
-                    radius: ['55%', '70%'],
-                    color: ['#d74e67', '#0092ff', '#eba954', '#21b6b9'],
-                    label: {
-                        normal: {
-                            show: true,
-                            formatter: '{b}\n{d}%'
-                        }
-                    },
-                    labelLine: {
-                        normal: {
-                            show: true
-                        }
-                    },
-                    data: this.props.data
-                }
-            ]
+            },{
+                name:'牧场分类',
+                type:'pie',
+                radius: ['55%', '70%'],
+                color: ['#d74e67', '#0092ff', '#eba954', '#21b6b9'],
+                label: {
+                    normal: {
+                        show: true,
+                        formatter: '{b}\n{d}%'
+                    }
+                },
+                labelLine: {
+                    normal: {
+                        show: true
+                    }
+                },
+                data: this.props.data
+            }]
         };
         // 绘制图表
         myChart.setOption(option);
@@ -76,7 +87,6 @@ class PasturePieChart extends Component {
                 value: data[i].value
             })
         }
-        console.log(temp)
         return temp;
     }
     componentWillUnmount() {

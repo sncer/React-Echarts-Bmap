@@ -10,7 +10,7 @@ import 'echarts/lib/component/title';
 // 引入中国地图（默认显示）
 import 'echarts/map/js/china';
 // 引入全国344个市、区、州对应的数字编号
-import { CityMap, ProvinceMap, SpecialRegion } from '../../js/utils/global';
+import { CityMap, ProvinceMap, SpecialRegion } from '../../js/utils/geoMap';
 // 引入jQuery（重要）
 import $ from 'jquery';
 
@@ -65,6 +65,7 @@ class HeatMapChart extends Component {
 
         //绘制全国地图
         $.getJSON( process.env.PUBLIC_URL + '/assets/map/china.json', function(json){
+            console.log(json)
             //生成Demo数据
             var data = [];
             for( var i = 0; i < json.features.length; i++ ){
@@ -82,10 +83,11 @@ class HeatMapChart extends Component {
 
         //地图点击事件
         myChart.on('click', function (params) {
-            console.log( params );
+            
             if( params.name in ProvinceMap ){
                 //如果点击的是34个省、市、自治区，绘制选中地区的二级地图
                 $.getJSON( process.env.PUBLIC_URL + '/assets/map/province/' + ProvinceMap[params.name] +'.json', function(json){
+                    console.log(json);
                     echarts.registerMap( params.name, json);
                     var data = [];
                     for( var i = 0; i < json.features.length; i++ ){
