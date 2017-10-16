@@ -25,6 +25,15 @@ class CityPicker extends Component {
       districtName: '',
     }
   }
+
+  componentWillReceiveProps(nextProps) {
+    const { selectedProvince, selectedCity, selectedDistrict } = nextProps
+    this.setState({
+      province: selectedProvince,
+      city: selectedCity,
+      district: selectedDistrict,
+    })
+  }
   
   componentDidMount() {
     const { value } = this.props

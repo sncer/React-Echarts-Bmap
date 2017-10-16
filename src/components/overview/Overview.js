@@ -32,6 +32,7 @@ export class Overview extends Component {
             		percent: 0,
             	}
             },
+            heatMapChartData: [],
             pasturePieChartData:[],
             pictorialBarChartData:[],
             rankLineChartData: [],
@@ -51,7 +52,7 @@ export class Overview extends Component {
         this.ajax = null;
     }
     //cityPicker回调函数，更新地点
-    handleCityPickerChange = (value) => {
+    handleLocationChange = (value) => {
 	    this.setState({
 	    	location: value
 	    },()=>{this.getData();this.getRankData();});
@@ -94,6 +95,21 @@ export class Overview extends Component {
 		});
 		return data;
     }
+    /**
+    *功能：转化Echarts地图数据
+    *返回类型：Array
+    *形式：[{value:135, name:'北京市'}]
+    **/
+    convertMapData(arr){
+		let data = [];
+		arr.map((item,index)=>{
+			data.push({
+				name: item.poicName,
+				value: item.aiasCount
+			});
+		});
+		return data;
+    }
     //获取并更新数据
     getData() {
 		const { location } = this.state;
@@ -127,6 +143,7 @@ export class Overview extends Component {
 		        	},
 		        	pictorialBarChartData: this.convertBarData(data.povertyAiasDataList),
 		        	pasturePieChartData: this.convertPieData(data.efDataList),
+		        	heatMapChartData: this.convertMapData(data.povertyDataList),
 		        })
 		        
 		    },
@@ -212,8 +229,11 @@ export class Overview extends Component {
 					<div className="top">
 						<div className="select_bar">
 							<CityPicker
-					          source={AreaData}
-					          onOptionChange={this.handleCityPickerChange} />
+								selectedProvince = {this.state.location.province}
+								selectedCity = {this.state.location.city}
+								selectedDistrict = {this.state.location.district}
+								source = {AreaData}
+								onOptionChange = {this.handleLocationChange} />
 						</div>
 						<div className="rank_list">
 							<div className="title"><i></i>各省牲畜数排名</div>
@@ -230,7 +250,7 @@ export class Overview extends Component {
 								<li><i>10</i>河南省</li>
 							</ul>
 						</div>
-						<HeatMapChart />
+						<HeatMapChart data={this.state.heatMapChartData} location={this.state.location} onClickHandler={this.handleLocationChange} />
 					</div>
 					<div className="bottom">
 						<div className="button_group">
