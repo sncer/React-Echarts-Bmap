@@ -36,6 +36,7 @@ export class Overview extends Component {
             pasturePieChartData:[],
             pictorialBarChartData:[],
             rankLineChartData: [],
+            rankListData:[],
             location:{
             	province: '',
 				provinceName: '',
@@ -43,7 +44,7 @@ export class Overview extends Component {
 				cityName: '',
 				district: '',
 				districtName: '',
-            }
+            },
         };
         this.ajaxParam = {
         	url: '/smartGraze/poverty/getSortAiasByProvince',
@@ -53,6 +54,7 @@ export class Overview extends Component {
     }
     //cityPicker回调函数，更新地点
     handleLocationChange = (value) => {
+    	// console.log(value)
 	    this.setState({
 	    	location: value
 	    },()=>{this.getData();this.getRankData();});
@@ -71,13 +73,15 @@ export class Overview extends Component {
     **/
     convertBarData(arr){
 		let data = [];
-		arr.map((item,index)=>{
-			data.push({
-				name: item.dicName,
-				value: item.aiasCount
+		if(arr.length > 0){
+			arr.map((item,index)=>{
+				data.push({
+					name: item.dicName,
+					value: item.aiasCount
+				});
 			});
-		});
-		data.sort(sortBy('value'))
+			data.sort(sortBy('value'))
+		}
 		return data;
     }
     /**
@@ -87,12 +91,14 @@ export class Overview extends Component {
     **/
     convertPieData(arr){
 		let data = [];
-		arr.map((item,index)=>{
-			data.push({
-				name: item.efNameClass + '牧场',
-				value: item.efCount
+		if(arr.length > 0){
+			arr.map((item,index)=>{
+				data.push({
+					name: item.efNameClass + '牧场',
+					value: item.efCount
+				});
 			});
-		});
+		}
 		return data;
     }
     /**
@@ -102,13 +108,46 @@ export class Overview extends Component {
     **/
     convertMapData(arr){
 		let data = [];
-		arr.map((item,index)=>{
-			data.push({
-				name: item.poicName,
-				value: item.aiasCount
+		if(arr.length > 0){
+			arr.map((item,index)=>{
+				data.push({
+					name: item.poicName,
+					value: item.aiasCount
+				});
 			});
-		});
+		}
+		
 		return data;
+    }
+    /**
+    *功能：获取排名数据，取前十
+    *返回类型：Array
+    *形式：[{value:135, name:'北京市'}]
+    **/
+    convertRankListData(arr){
+    	let data = [];
+		if(arr.length > 0){
+			arr.map((item,index)=>{
+				data.push({
+					name: item.poicName,
+					value: item.aiasCount
+				});
+			});
+		}
+		
+		data.sort(sortBy('value'))
+		return data.slice(0,10);
+    }
+    //获取排行列表名称
+    getRankListTitle(){
+		const { location } = this.state;
+		if(location.province === ''){
+			return "各省"
+		}else if (location.city === ''){
+			return "各市"
+		}else{
+			return "各县"
+		}
     }
     //获取并更新数据
     getData() {
@@ -141,9 +180,10 @@ export class Overview extends Component {
 		            		percent: data.aiasPercent || 0,
 		            	}
 		        	},
-		        	pictorialBarChartData: this.convertBarData(data.povertyAiasDataList),
-		        	pasturePieChartData: this.convertPieData(data.efDataList),
-		        	heatMapChartData: this.convertMapData(data.povertyDataList),
+		        	pictorialBarChartData: this.convertBarData(data.povertyAiasDataList || []),
+		        	pasturePieChartData: this.convertPieData(data.efDataList || []),
+		        	heatMapChartData: this.convertMapData(data.povertyDataList || []),
+		        	rankListData: this.convertRankListData(data.povertyDataList || []),
 		        })
 		        
 		    },
@@ -170,7 +210,7 @@ export class Overview extends Component {
 		        // console.log(res)
 		        let data = res.dataObject;
 		        this.setState({
-		        	rankLineChartData: this.convertBarData(data.povertyAiasDataList),
+		        	rankLineChartData: this.convertBarData(data.povertyAiasDataList || []),
 		        })
 		        
 		    },
@@ -179,6 +219,18 @@ export class Overview extends Component {
 		    
 		})
     }
+    getRankChartTitle(){
+    	const { location, rankIndex } = this.state;
+    	const rankType = ["","牲畜", "牧户","牧场"];
+    	if(location.province === ''){
+			return "全国所有省排名"
+		}else if (location.city === ''){
+			return location.provinceName + "所有市排名"
+		}else{
+			return location.cityName + "所有县排名"
+		}
+    }
+
     componentDidMount(){
     	//获取数据，默认全国
     	this.getData();
@@ -192,20 +244,23 @@ export class Overview extends Component {
 		this.rankAjax.abort();
 	}
 	render() {
+		const { sumData, location, rankListData, rankIndex, 
+			rankLineChartData, pasturePieChartData, 
+			pictorialBarChartData, heatMapChartData } = this.state;
 		return (
 			<div className="main overview">
 				<div className="left">
 					<section className="sum_section">
 						<div className="sum">
 							<div className="title">牧场总数</div>
-							<Sum data={this.state.sumData.pasture} unit={'个'} />
+							<Sum data={sumData.pasture} unit={'个'} />
 						</div>
-						<PasturePieChart data={this.state.pasturePieChartData} />
+						<PasturePieChart data={pasturePieChartData} />
 					</section>
 					<section className="sum_section">
 						<div className="sum">
 							<div className="title">牧户总数</div>
-							<Sum data={this.state.sumData.herdsman} unit={'户'} />
+							<Sum data={sumData.herdsman} unit={'户'} />
 						</div>
 						<div className="img-wrap">
 							<img src={povertyImg} alt=""/>
@@ -214,13 +269,13 @@ export class Overview extends Component {
 					<section className="sum_section">
 						<div className="sum">
 							<div className="title">畜牧总数</div>
-							<Sum data={this.state.sumData.livestock} unit={'头'} />
+							<Sum data={sumData.livestock} unit={'头'} />
 						</div>
 					</section>
 					<section className="sum_section">
 						<div className="sum">
 							<div className="title">牲畜种类</div>
-							<PictorialBarChart data={this.state.pictorialBarChartData} />
+							<PictorialBarChart data={pictorialBarChartData} />
 						</div>
 					</section>
 					<RefreshTime />
@@ -229,36 +284,31 @@ export class Overview extends Component {
 					<div className="top">
 						<div className="select_bar">
 							<CityPicker
-								selectedProvince = {this.state.location.province}
-								selectedCity = {this.state.location.city}
-								selectedDistrict = {this.state.location.district}
+								selectedProvince = {location.province}
+								selectedCity = {location.city}
+								selectedDistrict = {location.district}
 								source = {AreaData}
 								onOptionChange = {this.handleLocationChange} />
 						</div>
 						<div className="rank_list">
-							<div className="title"><i></i>各省牲畜数排名</div>
+							<div className="title"><i></i>{this.getRankListTitle()}牲畜数排名</div>
 							<ul className="list">
-								<li><i>1</i>广东省</li>
-								<li><i>2</i>河北省</li>
-								<li><i>3</i>贵州省</li>
-								<li><i>4</i>吉林省</li>
-								<li><i>5</i>江西省</li>
-								<li><i>6</i>福建省</li>
-								<li><i>7</i>安徽省</li>
-								<li><i>8</i>广西省</li>
-								<li><i>9</i>甘肃省</li>
-								<li><i>10</i>河南省</li>
+							{rankListData.length > 0 ?
+								rankListData.map((item,index)=>{
+									return <li key={index}><i>{index+1}</i>{item.name}</li>
+								}) : null
+							}
 							</ul>
 						</div>
-						<HeatMapChart data={this.state.heatMapChartData} location={this.state.location} onClickHandler={this.handleLocationChange} />
+						<HeatMapChart data={heatMapChartData} location={location} onClickHandler={this.handleLocationChange} />
 					</div>
 					<div className="bottom">
 						<div className="button_group">
-							<button onClick={(e)=>this.changeRankIndex(1,e)} className={this.state.rankIndex == 1?"active":""}>牲畜</button>
-							<button onClick={(e)=>this.changeRankIndex(2,e)} className={this.state.rankIndex == 2?"active":""}>牧户</button>
-							<button onClick={(e)=>this.changeRankIndex(3,e)} className={this.state.rankIndex == 3?"active":""}>牧场</button>
+							<button onClick={(e)=>this.changeRankIndex(1,e)} className={rankIndex == 1?"active":""}>牲畜</button>
+							<button onClick={(e)=>this.changeRankIndex(2,e)} className={rankIndex == 2?"active":""}>牧户</button>
+							<button onClick={(e)=>this.changeRankIndex(3,e)} className={rankIndex == 3?"active":""}>牧场</button>
 						</div>
-						<RankLineChart data={this.state.rankLineChartData} />
+						<RankLineChart data={rankLineChartData} title={this.getRankChartTitle()} />
 					</div>
 				</div>
 			</div>

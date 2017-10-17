@@ -116,7 +116,7 @@ class RankLineChart extends Component {
     componentWillReceiveProps(nextProps) {
         option = {
             title: {
-                text: '全国所有省排名',
+                text: nextProps.title,
             },
             xAxis: [{
                 data: this.getXAxisData(nextProps.data)

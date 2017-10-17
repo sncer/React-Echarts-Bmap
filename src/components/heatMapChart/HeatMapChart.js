@@ -10,7 +10,7 @@ import 'echarts/lib/component/title';
 // 引入中国地图（默认显示）
 // import 'echarts/map/js/china';
 // 引入全国344个市、区、州对应的数字编号
-import { CityMap, ProvinceMap, SpecialRegion, ProvinceNameMap, ProvinceCodeMap } from '../../js/utils/geoMap';
+import { CityMap, ProvinceMap, SpecialRegion, ProvinceNameMap, ProvinceCodeMap, getFullNameByName, getCodeByName } from '../../js/utils/geoMap';
 // 引入jQuery（重要）
 import $ from 'jquery';
 
@@ -19,7 +19,7 @@ let myChart;
 let option = {
     title: {
         text: '热力地图',
-        subtext: '全国',
+        // subtext: '全国',
         textStyle: {
             fontWeight: 'normal',
             fontSize: 16,
@@ -60,9 +60,8 @@ class HeatMapChart extends Component {
     constructor(){
         super();
         this.state = {
-            chinaData: [],  //用于存储全国的数据
-            
         };
+        this.chinaData = [];
         this.newLocation = {
             province: '',
             provinceName: '',
@@ -88,9 +87,7 @@ class HeatMapChart extends Component {
         }else{
             name = "china";
             data = this.convertProvinceName(data);
-            this.setState({
-                chinaData: data
-            }); 
+            this.chinaData = data;
             this.renderMap(name, data)
         }
         
@@ -112,7 +109,7 @@ class HeatMapChart extends Component {
                         value: this.getRandomData()
                     })
                 }
-                this.state.chinaData = data;
+                this.chinaData = data;
             **/
             
             //注册地图
@@ -129,13 +126,13 @@ class HeatMapChart extends Component {
                 this.renderProvinceMap(params.name, []);
                 //更新地址,增加省
                 this.props.onClickHandler($.extend(this.newLocation,{
-                    province: params.data.code,
-                    provinceName: params.data.fullName,
+                    province: getCodeByName(params.name),
+                    provinceName: getFullNameByName(params.name),
                 }))
             }else if( params.seriesName in ProvinceMap ){
                 //如果是直辖市/特别行政区，只有二级下钻，回到全国
                 if( SpecialRegion.indexOf(params.seriesName) >= 0 ){
-                    this.renderMap('china',this.state.chinaData);
+                    this.renderMap('china',this.chinaData);
                     //更新地址回到默认状态
                     this.props.onClickHandler($.extend(this.newLocation,{
                         province: '',
@@ -149,15 +146,15 @@ class HeatMapChart extends Component {
                     this.renderCityMap(params.name, []);
                     //更新地址,增加市
                     this.props.onClickHandler($.extend(this.newLocation,{
-                        city: CityMap[params.data.name],
-                        cityName: params.data.name,
+                        city: CityMap[params.name],
+                        cityName: params.name,
                         district: '',
                         districtName: '',
-                }))
+                    }))
                 }   
             }else{
                 // 点击县级单位，回到全国
-                this.renderMap('china', this.state.chinaData);
+                this.renderMap('china', this.chinaData);
                 //更新地址回到默认状态
                 this.props.onClickHandler($.extend(this.newLocation,{
                     province: '',
@@ -213,7 +210,7 @@ class HeatMapChart extends Component {
     }
     //更新地图
     renderMap(map, data) {
-        option.title.subtext = map =='china'?'全国':map;
+        // option.title.subtext = map =='china'?'全国':map;
         option.series = [ 
             {
                 name: map =='china'?'全国':map,
@@ -241,12 +238,16 @@ class HeatMapChart extends Component {
                     }
                 },
                 data: data,
+                visualMap: {
+                    min: this.getMinValue(data),
+                    max: this.getMaxValue(data),
+                },
             }   
         ];
         //渲染地图
         myChart.setOption(option);
     }
-    // 转化一下省的名字，由全称转为简称
+    // 将省的名字由全称转为简称
     convertProvinceName(data){
         let temp = [];
         if(data.length > 0){
@@ -260,6 +261,32 @@ class HeatMapChart extends Component {
             }
         }
         return temp;
+    }
+    //获取最大值
+    getMaxValue(data){
+        let max = 0;
+        if(data.length > 0){
+            for (var i = 0; i < data.length; i++) {
+                if(data[i].value > max){
+                    max = data[i].value
+                }
+                
+            }
+        }
+        return max;
+    }
+    //获取最小值
+    getMinValue(data){
+        let min = 0;
+        if(data.length > 0){
+            for (var i = 0; i < data.length; i++) {
+                if(data[i].value < min){
+                    min = data[i].value
+                }
+                
+            }
+        }
+        return min;
     }
 
 	render() {

@@ -466,4 +466,24 @@ const ProvinceCodeMap = {
 const SpecialRegion = ["北京","天津","上海","重庆","香港","澳门"];
 
 
-export { CityMap, ProvinceMap, SpecialRegion, ProvinceNameMap, ProvinceCodeMap };
+// 根据省的简称获取省的全称
+function getFullNameByName(name){
+    for(var key in ProvinceNameMap){
+        if(ProvinceNameMap[key] === name){
+            return key
+        }
+    }
+    return ""
+}
+// 根据省的简称获取省的编码
+function getCodeByName(name){
+    var fullName = getFullNameByName(name);
+    if(fullName){
+        return ProvinceCodeMap[fullName]
+    }else{
+        return ""
+    }
+}
+
+
+export { CityMap, ProvinceMap, SpecialRegion, ProvinceNameMap, ProvinceCodeMap, getCodeByName, getFullNameByName };
