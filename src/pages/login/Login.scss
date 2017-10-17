@@ -3,11 +3,10 @@
       width:100%;
       height: 100vh;
       background: url(../../img/login_bg.png) no-repeat center center;
+      background-size: cover;
       color: #333;
       font-size: 14px;
       font-family: "Microsoft YaHei";
-      cursor: default;
-      min-width: 1280px;
   }
 
   .login-box {
@@ -23,11 +22,13 @@
       }
       form{
           width:376px;
-          height: 300px;
           padding: 15px 0 20px;
           background-color: #fff;
           border-radius: 4px;
           h2{
+            display: flex;
+            justify-content: space-around;
+            justify-content: space-evenly;
             margin-top: 0;
             height: 48px;
             border-bottom: 1px solid #ccc;
@@ -36,10 +37,14 @@
                 display: inline-block;
                 height: 48px;
                 line-height: 48px;
-                border-bottom: 3px solid #3994e0;
                 font-size: 18px;
                 font-weight: 700;
-              }
+                cursor:pointer;
+              } 
+            .active{
+                color:#3994e0;
+                border-bottom: 3px solid #3994e0;
+             }  
           }
       }
   }

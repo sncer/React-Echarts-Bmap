@@ -5,35 +5,28 @@ export class LoginInput extends Component{
 	constructor(props){
 		super(props);
 		this.state={
-			userName:"",
-			userPassword:"",
+			username:"",
+			password:"",
 		};
+		this.stateChange=this.stateChange.bind(this);
 	}
 
 	// 监听input中的数据，保存到State中
-	changeUsername(e){
-		let uname=e.target.value;
+	stateChange(e){
+		let target=e.target;
 		this.setState({
-			userName:uname
-		});
-		console.log(this.state.userName);
-	}
-
-	changePassword(e){
-		let upwd=e.target.value;
-		this.setState({
-			userPassword:upwd
+			[target.name]:target.value
 		});
 	}
 
 	render(){
 		return (
-			<div className="loginInput">
+			<div className="loginInput" onChange={this.stateChange}>
                 <label>
-                    <input type="text" name="username" placeholder="用户名"/>
+                    <input type="text" name="username" value={this.state.username} placeholder="用户名"/>
 	            </label>
 	            <label>
-	                <input type="text" name="password" placeholder="密码"/>
+	                <input type="password" name="password" value={this.state.password}  placeholder="密码"/>
 	            </label>
 	            <button className="btn btn-primary">登录</button>
             </div>
