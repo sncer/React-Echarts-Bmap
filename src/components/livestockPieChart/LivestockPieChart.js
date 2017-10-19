@@ -30,7 +30,7 @@ class LivestockPieChart extends Component {
                     color: '#b7b7b7',
                 },
                 
-                data:['牛','骆驼','马','山羊','绵羊']
+                data: this.getLegendData(this.props.data)
             },
 
             series: [
@@ -79,6 +79,20 @@ class LivestockPieChart extends Component {
         // 绘制图表
         myChart.setOption(option);
     }
+    componentWillReceiveProps(nextProps) {
+        option = {
+            legend: {
+                data: this.getLegendData(nextProps.data)
+            },
+            series: [{
+                name:'牲畜分类',
+                
+                data: nextProps.data
+            }]
+        };
+        // 绘制图表
+        myChart.setOption(option);
+    }
     componentWillUnmount() {
         myChart.dispose();
     }
@@ -86,6 +100,20 @@ class LivestockPieChart extends Component {
         return (
             <div id="livestockPieChart" style={{ width: '100%', height: '280px' }}></div>
         );
+    }
+    /**
+    *功能：转化牧场类型饼图数据
+    *返回类型：Array
+    *形式：["马","骆驼"]
+    **/
+    getLegendData(arr){
+        let data = [];
+        if(arr.length > 0){
+            arr.map((item,index)=>{
+                data.push(item.name);
+            });
+        }
+        return data;
     }
 }
 

@@ -2,42 +2,71 @@ import React, { Component } from 'react';
 import Sum from '../../components/sum/Sum';
 import RefreshTime from '../../components/refreshTime/RefreshTime';
 import LivestockPieChart from '../../components/livestockPieChart/LivestockPieChart';
-import FenceMapChart from '../../components/fenceBmapChart/FenceBmapChart';
+import FenceBmapChart from '../../components/fenceBmapChart/FenceBmapChart';
+import CityPicker from '../../components/cityPicker/CityPicker';
+import AreaData from '../../js/utils/areaData.json';
 import './Fence.scss';
+// 引入jQuery（重要）
+import $ from 'jquery';
+import { sortBy } from '../../js/utils/comm.js';
+
 export class Fence extends Component {
 	constructor(){
         super();
         this.state = {
             sumData:{
             	herdsman:{
-            		number: 6924,
-            		percent: 5.6,
+            		number: 0,
+            		percent: 0,
             	},
             	camera:{
-            		number: 253,
-            		percent: -1.6,
+            		number: 0,
+            		percent: 0,
             	},
             	fence:{
-            		number: 34,
-            		percent: -0.6,
+            		number: 0,
+            		percent: 0,
             	},
             	livestock:{
-            		number: 156000,
-            		percent: -0.6,
+            		number: 0,
+            		percent: 0,
             	},
             },
-            livestockPieChartData:[
-                {value:135, name:'山羊'},
-                {value:1048, name:'牛'},
-                {value:251, name:'骆驼'},
-                {value:147, name:'马'},
-                {value:102, name:'绵羊'}
-            ]
-,
-            
+            livestockPieChartData: [],
+            FenceBmapChartData: [],
+            location:{
+            	province: '',
+				provinceName: '',
+				city: '',
+				cityName: '',
+				district: '',
+				districtName: '',
+            },
         };
+        this.ajaxParam = {
+        	url: '/smartGraze/poverty/getEfSum',
+        };
+        this.ajax = null;  
+
+
     }
+    //cityPicker回调函数，更新地点
+    handleLocationChange = (value) => {
+    	// console.log(value)
+	    this.setState({
+	    	location: value
+	    },()=>{this.getData()});
+	}
+	componentDidMount(){
+    	//获取数据，默认全国
+    	this.getData();
+    }
+	componentWillUnmount(){
+		//终止ajax
+		this.ajax.abort();
+	}
 	render() {
+		const { location, livestockPieChartData, FenceBmapChartData } = this.state;
 		return (
 			<div className="main fence">
 				<div className="left">
@@ -64,7 +93,7 @@ export class Fence extends Component {
 							<div className="title">牲畜总数</div>
 							<Sum data={this.state.sumData.livestock} unit={'头'} />
 						</div>
-						<LivestockPieChart data={this.state.livestockPieChartData} />
+						<LivestockPieChart data={livestockPieChartData} />
 					</section>
 					
 					<RefreshTime />
@@ -72,21 +101,143 @@ export class Fence extends Component {
 				<div className="right">
 					<div className="whole">
 						<div className="select_bar">
-							<select>
-								<option>请选择省</option>
-								<option>山东省</option>
-								<option>河北省</option>
-								<option>山西省</option>
-							</select>
+							<CityPicker
+								selectedProvince = {location.province}
+								selectedCity = {location.city}
+								selectedDistrict = {location.district}
+								source = {AreaData}
+								onOptionChange = {this.handleLocationChange} />
 							
 						</div>
-						<FenceMapChart />
+						<FenceBmapChart data={FenceBmapChartData} />
 					</div>
 					
 				</div>
 			</div>
 		);
 	}
+	//获取并更新数据
+    getData() {
+		const { location } = this.state;
+    	let ajaxData = {
+    		poicId: location.province,
+    		cityId: location.city,
+    		cutyDsrcId: location.districtName
+    	}
+    	this.ajax = $.ajax({
+		    url: this.ajaxParam.url,
+		    type: 'GET', 
+		    data: ajaxData,
+		    dataType:'json',
+		    success: (res) => {
+		        // console.log(res)
+		        let data = res.dataObject;
+		        this.setState({
+		        	sumData: {
+		        		herdsman:{
+		            		number: data.herdCount || 0,
+		            		percent: data.herfPercent || 0,
+		            	},
+		        		camera:{
+		            		number: data.camCount || 0,
+		            		percent: data.camPercent || 0,
+		            	},
+		            	fence:{
+		            		number: data.coveredCount || 0,
+		            		percent: data.coverPercent || 0,
+		            	},
+		            	livestock:{
+		            		number: data.aiasCount || 0,
+		            		percent: data.aiasPercent || 0,
+		            	},
+		        	},
+		        	livestockPieChartData: this.convertPieData(data.povertyAiasDataList || []),
+					FenceBmapChartData: this.convertBmapData(data.electricFenceExtendedList || []),
+		        })
+		        
+		    },
+		    error: ()=>{
+		    },
+		    
+		})
+    }
+    /**
+    *功能：转化畜牧类型饼图数据
+    *返回类型：Array
+    *形式：[{value:135, name:'牛'}]
+    **/
+    convertPieData(arr){
+		let data = [];
+		if(arr.length > 0){
+			arr.map((item,index)=>{
+				data.push({
+					name: item.dicName,
+					value: item.aiasCount
+				});
+			});
+		}
+		return data;
+    }
+	/**
+    *功能：转化百度地图数据
+    *返回类型：Array
+    *形式：[{}]
+    **/
+    convertBmapData(arr){
+    	let data = [];
+    	if(arr.length > 0){
+			arr.map((item,index)=>{
+				data.push({
+					id: item.eetiFneId,
+					code: item.eetiFneCode,
+					name: item.eetiFneName,
+					value: [],
+					coords: this.convertCoords(item.lonLat),
+					type: item.grazeShapeName === "多边形" ? "polygon" : "circle",
+					radius: item.radius,
+					location: item.areaFullName,
+					class: item.grazeClassName,
+				});
+			});
+			//再次遍历，计算中心点坐标作为value，[124.03(经度), 46.58(纬度), 123(值，可选)]
+			data.map((item,index)=>{
+				item.value = this.getCenterCoord(item.coords)
+			});
+    	}
+    	console.log(data);
+    	return data;
+    }
+	/**
+    *功能：返回多边形顶点坐标
+    *返回类型：Array
+    *形式：[
+                [116.7,39.53],
+                [103.73,36.03],
+            ]
+    **/
+    convertCoords(str){
+    	let coords = []
+    	if(str !== null && str.length > 0){
+			let arr = str.split(',');
+			if(arr.length > 0){
+				arr.map((item,index)=>{
+					let temp = item.split('-');
+					coords.push([temp[0],temp[1]]);
+				});
+			}
+    	}
+    	return coords;
+
+    }
+    /**
+    *功能：返回多边形中心点坐标
+    *返回类型：Array
+    *形式：[116.7,39.53]
+    **/
+    getCenterCoord(coords){
+    	let center = [];
+		return [];
+    }
 }
 
 export default Fence;
