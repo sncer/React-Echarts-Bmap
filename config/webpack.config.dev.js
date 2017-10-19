@@ -294,8 +294,9 @@ module.exports = {
   performance: {
     hints: false,
   },
-  //全局引入jQuery
+  //全局引入jQuery和百度地图全局变量BMap
   externals: {
-    jquery: 'window.$'
+    jquery: 'window.$',
+    BMap: 'window.BMap',
   },
 };

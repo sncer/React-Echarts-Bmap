@@ -181,7 +181,7 @@ export class Fence extends Component {
 	/**
     *功能：转化百度地图数据
     *返回类型：Array
-    *形式：[{}]
+    *形式：[{...},{...},{...}]
     **/
     convertBmapData(arr){
     	let data = [];
@@ -191,7 +191,7 @@ export class Fence extends Component {
 					id: item.eetiFneId,
 					code: item.eetiFneCode,
 					name: item.eetiFneName,
-					value: [],
+					// value: [],
 					coords: this.convertCoords(item.lonLat),
 					type: item.grazeShapeName === "多边形" ? "polygon" : "circle",
 					radius: item.radius,
@@ -199,12 +199,8 @@ export class Fence extends Component {
 					class: item.grazeClassName,
 				});
 			});
-			//再次遍历，计算中心点坐标作为value，[124.03(经度), 46.58(纬度), 123(值，可选)]
-			data.map((item,index)=>{
-				item.value = this.getCenterCoord(item.coords)
-			});
+			
     	}
-    	console.log(data);
     	return data;
     }
 	/**
@@ -227,17 +223,8 @@ export class Fence extends Component {
 			}
     	}
     	return coords;
-
     }
-    /**
-    *功能：返回多边形中心点坐标
-    *返回类型：Array
-    *形式：[116.7,39.53]
-    **/
-    getCenterCoord(coords){
-    	let center = [];
-		return [];
-    }
+    
 }
 
 export default Fence;

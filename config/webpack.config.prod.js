@@ -364,8 +364,9 @@ module.exports = {
     tls: 'empty',
     child_process: 'empty',
   },
-  //全局引入jQuery
+  //全局引入jQuery和百度地图全局变量BMap
   externals: {
-    jquery: 'window.$'
+    jquery: 'window.$',
+    BMap: 'window.BMap',
   },
 };
