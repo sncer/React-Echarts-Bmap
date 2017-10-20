@@ -9,14 +9,11 @@ export class RegisterInput extends Component{
 			password:"",
 			rePassword:""
 		};
-		// this.changeUsername=this.changeUsername.bind(this);
-		// this.changePassword=this.changePassword.bind(this);
-		// this.changeRepassword=this.changeRepassword.bind(this);
-		this.stateChange=this.stateChange.bind(this);
+		this.handleChange=this.handleChange.bind(this);
 	}
 
-	stateChange(e){
-		let target=e.target;
+	handleChange(e){
+		const target=e.target;
 		this.setState({
 			[target.name]:target.value
 		});
@@ -24,15 +21,15 @@ export class RegisterInput extends Component{
 	
 	render(){
 		return (
-			<div className="loginInput" onChange={this.stateChange}>
+			<div className="loginInput">
                 <label>
-                    <input type="text" name="username" value={this.state.username} placeholder="用户名"/>
+                    <input type="text" name="username" value={this.state.username} onChange={this.handleChange} placeholder="用户名"/>
 	            </label>
 	            <label>
-	                <input type="password" name="password" value={this.state.password} placeholder="密码"/>
+	                <input type="password" name="password" value={this.state.password} onChange={this.handleChange} placeholder="密码"/>
 	            </label>
 	            <label>
-	                <input type="password" name="rePassword" value={this.state.rePassword}  placeholder="再次输入密码"/>
+	                <input type="password" name="rePassword" value={this.state.rePassword} onChange={this.handleChange} placeholder="再次输入密码"/>
 	            </label>
 	            <button className="btn btn-primary">注册</button>
             </div>

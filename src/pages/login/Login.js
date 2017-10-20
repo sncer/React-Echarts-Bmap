@@ -7,32 +7,36 @@ export class Login extends Component {
 	constructor(props){
 		super(props);
 		this.state={
-			hasAccount:true
+			tabIndex:0
 		};
-		this.logNavClick=this.logNavClick.bind(this);
-		this.regNavClick=this.regNavClick.bind(this);
 	}
-	logNavClick(){
-		this.setState({
-			hasAccount:true
-		});
+	componentDidUpdate(){
+		const slidebar=document.getElementsByClassName("slidebar")[0];
+		if(this.state.tabIndex==1){
+			slidebar.style.left="5.2em";
+		}else{
+			slidebar.style.left="0";
+		}
 	}
-	regNavClick(){
+	changeTabIndex(index,e){
 		this.setState({
-			hasAccount:false
+			tabIndex:index
 		});
 	}
 	render() {
-		let hasAccount=this.state.hasAccount;
+		let tabIndex=this.state.tabIndex;
 		return (
 			<div className="login-box">
 				<h1>智慧畜牧精准扶贫服务平台</h1>
                 <form>
-                	<h2>
-						<span className={hasAccount?"active":""} onClick={this.logNavClick}>登录</span>
-						<span className={hasAccount?"":"active"} onClick={this.regNavClick}>注册</span>
-                	</h2>
-                	{hasAccount?<LoginInput/>:<RegisterInput/>}
+                	<div className="tab-nav">
+						<div className="nav-slider">
+							<a className={tabIndex==0?"active":""} onClick={(e)=>this.changeTabIndex(0,e)}>登录</a>
+							<a className={tabIndex==1?"active":""} onClick={(e)=>this.changeTabIndex(1,e)}>注册</a>
+							<span className="slidebar"></span>
+						</div>
+                	</div>
+                	{tabIndex==0?<LoginInput/>:<RegisterInput/>}
                 </form>
             </div>
 		);

@@ -8,12 +8,12 @@ export class LoginInput extends Component{
 			username:"",
 			password:"",
 		};
-		this.stateChange=this.stateChange.bind(this);
+		this.handleChange=this.handleChange.bind(this);
 	}
 
 	// 监听input中的数据，保存到State中
-	stateChange(e){
-		let target=e.target;
+	handleChange(e){
+		const target=e.target;
 		this.setState({
 			[target.name]:target.value
 		});
@@ -21,12 +21,12 @@ export class LoginInput extends Component{
 
 	render(){
 		return (
-			<div className="loginInput" onChange={this.stateChange}>
+			<div className="loginInput">
                 <label>
-                    <input type="text" name="username" value={this.state.username} placeholder="用户名"/>
+                    <input type="text" name="username" value={this.state.username} onChange={this.handleChange} placeholder="用户名"/>
 	            </label>
 	            <label>
-	                <input type="password" name="password" value={this.state.password}  placeholder="密码"/>
+	                <input type="password" name="password" value={this.state.password} onChange={this.handleChange} placeholder="密码"/>
 	            </label>
 	            <button className="btn btn-primary">登录</button>
             </div>
