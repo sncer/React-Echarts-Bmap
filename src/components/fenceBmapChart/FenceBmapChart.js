@@ -14,11 +14,22 @@ import BmapStyleJson from '../../js/utils/bmapStyle.json';
 // 引入百度地图全局变量
 import BMap from 'BMap';
 
-let myChart,option;
+let myChart, option, map;
 class FenceMapChart extends Component {
     constructor(props){
         super(props);
         this.state = {
+        };
+        this.curFence = {
+            id: 0,
+            code: "",
+            name: "",
+            value: [],
+            coords: [],
+            type: "",
+            radius: 0,
+            location: "",
+            class: "",
         };
     }
 	componentDidMount() {
@@ -232,7 +243,21 @@ class FenceMapChart extends Component {
         };
         // 绘制图表
         myChart.setOption(option);
-
+        // 获取百度地图实例
+        map = myChart.getModel().getComponent('bmap').getBMap();
+        // 监听Echarts点击事件
+        myChart.on('click', (params) => {
+            if(params.data){
+                this.curFence = params.data;
+                myChart.setOption({
+                    name: 'detail',
+                    type: 'custom',
+                    renderItem: this.renderItem,
+                    data: [0],
+                });
+                this.setViewportByFence()
+            }
+        });
         window.addEventListener("resize", this.onWindowResize);
         
     }
@@ -352,31 +377,6 @@ class FenceMapChart extends Component {
             <div id="fenceBmapChart" style={{ width: '100%', height: '100%' }}></div>
         );
     }
-    //设置多边形和圆的绘制属性
-    renderItem(params, api) {
-        var coords = [];
-        var points = [];
-        for (var i = 0; i < coords.length; i++) {
-            points.push(api.coord(coords[i]));
-        }
-        var color = api.visual('color');
-
-        return {
-            type: 'polygon',
-            shape: {
-                points: echarts.graphic.clipPointsByRect(points, {
-                    x: params.coordSys.x,
-                    y: params.coordSys.y,
-                    width: params.coordSys.width,
-                    height: params.coordSys.height
-                })
-            },
-            style: api.style({
-                fill: color,
-                stroke: echarts.color.lift(color)
-            })
-        };
-    }
     /**
     *功能：转化data添加value值
     *返回类型：Array
@@ -389,8 +389,58 @@ class FenceMapChart extends Component {
             });
 
         }
-        console.log(data)
         return data;
+    }
+    //设置多边形和圆的绘制属性
+    renderItem = (params, api) => {
+        let curFence = this.curFence
+        let color = api.visual('color');
+        let coords = [];
+        let points = [];
+        if(curFence.type === "polygon"){
+            coords = curFence.coords;
+            for (let i = 0; i < coords.length; i++) {
+                //获取坐标点相对于地图左上角的偏移像素
+                points.push(api.coord(coords[i]));
+            }
+            return {
+                type: 'polygon',
+                shape: {
+                    points: echarts.graphic.clipPointsByRect(points, {
+                        x: params.coordSys.x,
+                        y: params.coordSys.y,
+                        width: params.coordSys.width,
+                        height: params.coordSys.height
+                    })
+                },
+                style: api.style({
+                    fill: color,
+                    stroke: echarts.color.lift(color)
+                })
+            };
+        }
+        if(curFence.type === "circle"){
+            coords = curFence.coords;
+            for (let i = 0; i < coords.length; i++) {
+                //获取坐标点相对于地图左上角的偏移像素
+                points.push(api.coord(coords[i]));
+            }
+            //计算半径
+            let radius = Math.sqrt(Math.pow(Math.abs(points[0][0]-points[1][0]),2) + Math.pow(Math.abs(points[0][1]-points[1][1]),2));
+            return {
+                type: 'circle',
+                shape: {
+                        cx: points[0][0],
+                        cy: points[0][1],
+                        r: radius,
+                    },
+                style: api.style({
+                    fill: color,
+                    stroke: echarts.color.lift(color)
+                })
+            };
+        }
+        
     }
     /**
     *功能：根据围栏类型和顶点坐标coords，返回中心点坐标经纬度
@@ -415,6 +465,29 @@ class FenceMapChart extends Component {
             }
         }
         return center;
+    }
+
+    //调整视野
+    setViewportByFence(){
+        let {type, coords, radius} = this.curFence;
+        if(coords.length > 0){
+            if(type === "polygon"){
+                let points = [];
+                coords.map((item, index)=>{
+                    points.push(new BMap.Point(item[0],item[1]))
+                });
+                let polygon = new BMap.Polygon(points);
+                map.setViewport(polygon.getPath());    //调整视野 
+            }
+            if(type === "circle"){
+                let point = new BMap.Point(coords[0][0],coords[0][1])
+                let circle =  new BMap.Circle(point,radius);
+                map.setViewport({
+                    center: point,
+                    zoom: 14
+                });    //调整视野
+            }
+        }
     }
 
 }
