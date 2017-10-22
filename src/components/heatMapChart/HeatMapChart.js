@@ -7,9 +7,7 @@ import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/visualMap';
 import 'echarts/lib/component/legend';
 import 'echarts/lib/component/title';
-// 引入中国地图（默认显示）
-// import 'echarts/map/js/china';
-// 引入全国344个市、区、州对应的数字编号
+// 引入全国344个市、区、州对应的数字编号, 和相关通用方法
 import { CityMap, ProvinceMap, SpecialRegion, ProvinceNameMap, ProvinceCodeMap, getFullNameByName, getCodeByName } from '../../js/utils/geoMap';
 // 引入jQuery（重要）
 import $ from 'jquery';

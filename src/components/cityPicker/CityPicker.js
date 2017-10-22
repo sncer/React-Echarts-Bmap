@@ -52,25 +52,50 @@ class CityPicker extends Component {
       [e.target.name]: e.target.value,
     })
     if(e.target.name === 'province') {
-      this.setState({
-        city: '',
-        district: '',
-        provinceName: selectedName,
-        cityName: '',
-        districtName: '',
-      })
+      if(e.target.value !== ''){
+        this.setState({
+          city: '',
+          district: '',
+          provinceName: selectedName,
+          cityName: '',
+          districtName: '',
+        })
+      }else{
+        this.setState({
+          city: '',
+          district: '',
+          provinceName: '',
+          cityName: '',
+          districtName: '',
+        })
+      }
     }
     if(e.target.name === 'city') {
-      this.setState({
-        district: '',
-        cityName: selectedName,
-        districtName: '',
-      })
+      if(e.target.value !== ''){
+        this.setState({
+          district: '',
+          cityName: selectedName,
+          districtName: '',
+        })
+      }else{
+        this.setState({
+          district: '',
+          cityName: '',
+          districtName: '',
+        })
+      }
     }
     if(e.target.name === 'district'){
-      this.setState({
-        districtName: selectedName,
-      })
+      if(e.target.value !== ''){
+        this.setState({
+          districtName: selectedName,
+        })
+      }else{
+        this.setState({
+          districtName: '',
+        })
+      }
+      
     }
     setTimeout(()=>onOptionChange && onOptionChange(this.state), 0)
   }
@@ -82,7 +107,7 @@ class CityPicker extends Component {
     const cities = province ? Object.keys(source[province] || {}).map(item => ({code: item, value: source[province][item]})) : []
     const districts = city ? Object.keys(source[city] || {}).map(item => ({code: item, value: source[city][item]})) : []
     return (
-      <div {...props}>
+      <div {...props} className="citypicker-wrapper">
         <Select name="province" value={province} handleChange={this.handleOptionChange} options={provinces} />
         <Select name="city" value={city} handleChange={this.handleOptionChange} options={cities} />
         {!noDistrict &&

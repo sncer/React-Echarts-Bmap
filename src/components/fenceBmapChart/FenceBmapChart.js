@@ -13,7 +13,7 @@ import 'echarts/extension/bmap/bmap'
 import BmapStyleJson from '../../js/utils/bmapStyle.json';
 // 引入百度地图全局变量
 import BMap from 'BMap';
-
+import $ from 'jquery';
 let myChart, option, map;
 class FenceMapChart extends Component {
     constructor(props){
@@ -30,6 +30,9 @@ class FenceMapChart extends Component {
             radius: 0,
             location: "",
             class: "",
+            provinceName: "",
+            cityName: "",
+            districtName: "",
         };
     }
 	componentDidMount() {
@@ -103,7 +106,7 @@ class FenceMapChart extends Component {
                         color: '#ddd'
                     }
                 },
-                data: ["沈阳","太原","天津","南宁","石家庄","上海","哈尔滨","武汉","北京","南昌","济南","西安","吉林","南京","成都"]
+                data: this.getYAxisData(this.props.barData)
             },
             bmap: {
                 center: [104.114129, 37.550339],
@@ -177,52 +180,7 @@ class FenceMapChart extends Component {
                             color: '#ddb926'
                         }
                     },
-                    data: [{
-                        name: "北京",
-                        value: 38
-                    }, {
-                        name: "南京",
-                        value: 147
-                    }, {
-                        name: "吉林",
-                        value: 74
-                    }, {
-                        name: "上海",
-                        value: 33
-                    }, {
-                        name: "成都",
-                        value: 192
-                    }, {
-                        name: "哈尔滨",
-                        value: 35
-                    }, {
-                        name: "沈阳",
-                        value: 0
-                    }, {
-                        name: "武汉",
-                        value: 36
-                    }, {
-                        name: "石家庄",
-                        value: 32
-                    }, {
-                        name: "天津",
-                        value: 7
-                    }, {
-                        name: "太原",
-                        value: 1
-                    }, {
-                        name: "西安",
-                        value: 63
-                    }, {
-                        name: "南宁",
-                        value: 29
-                    }, {
-                        name: "南昌",
-                        value: 48
-                    }, {
-                        name: "济南",
-                        value: 61
-                    }],
+                    data: this.props.barData,
                 },
                 {
                     name: 'detail',
@@ -248,25 +206,30 @@ class FenceMapChart extends Component {
         // 监听Echarts点击事件
         myChart.on('click', (params) => {
             if(params.data){
-                this.curFence = params.data;
-                myChart.setOption({
-                    name: 'detail',
-                    type: 'custom',
-                    renderItem: this.renderItem,
-                    data: [0],
-                });
-                this.setViewportByFence()
+                
+                this.props.onFenceClick(params.data)
             }
         });
         window.addEventListener("resize", this.onWindowResize);
         
     }
     componentWillReceiveProps(nextProps) {
+        //保存当前围栏数据到全局变量中，renderItem中要用到
+        this.curFence = nextProps.curFence;
+
+        if(nextProps.curFence.id > 0){
+            //设置当前围栏数据
+            this.setViewportByFence(nextProps.curFence)
+        }else{
+            //根据行政区调整视野
+            this.setViewportByLocation(nextProps.location);
+        }
+        
         option = {
             yAxis: {
                 type: 'category',
                 name: 'TOP 10',
-                data: ["沈阳","太原","天津","南宁","石家庄","上海","哈尔滨","武汉","北京","南昌","济南","西安","吉林","南京","成都"]
+                data: this.getYAxisData(nextProps.barData)
             },
             series : [
                 {
@@ -307,52 +270,7 @@ class FenceMapChart extends Component {
                 **/
                 {
                     id: 'bar',
-                    data: [{
-                        name: "北京",
-                        value: 38
-                    }, {
-                        name: "南京",
-                        value: 147
-                    }, {
-                        name: "吉林",
-                        value: 74
-                    }, {
-                        name: "上海",
-                        value: 33
-                    }, {
-                        name: "成都",
-                        value: 192
-                    }, {
-                        name: "哈尔滨",
-                        value: 35
-                    }, {
-                        name: "沈阳",
-                        value: 0
-                    }, {
-                        name: "武汉",
-                        value: 36
-                    }, {
-                        name: "石家庄",
-                        value: 32
-                    }, {
-                        name: "天津",
-                        value: 7
-                    }, {
-                        name: "太原",
-                        value: 1
-                    }, {
-                        name: "西安",
-                        value: 63
-                    }, {
-                        name: "南宁",
-                        value: 29
-                    }, {
-                        name: "南昌",
-                        value: 48
-                    }, {
-                        name: "济南",
-                        value: 61
-                    }],
+                    data: nextProps.barData,
                 },
                 {
                     name: 'detail',
@@ -364,6 +282,7 @@ class FenceMapChart extends Component {
         };
         // 绘制图表
         myChart.setOption(option);
+        
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize);
@@ -393,6 +312,7 @@ class FenceMapChart extends Component {
     }
     //设置多边形和圆的绘制属性
     renderItem = (params, api) => {
+        //从全局变量获得围栏信息
         let curFence = this.curFence
         let color = api.visual('color');
         let coords = [];
@@ -467,27 +387,71 @@ class FenceMapChart extends Component {
         return center;
     }
 
-    //调整视野
-    setViewportByFence(){
-        let {type, coords, radius} = this.curFence;
+    //根据围栏调整视野
+    setViewportByFence(fence){
+        //从全局变量中获取围栏信息
+        let {type, coords} = fence;
         if(coords.length > 0){
             if(type === "polygon"){
                 let points = [];
                 coords.map((item, index)=>{
                     points.push(new BMap.Point(item[0],item[1]))
                 });
-                let polygon = new BMap.Polygon(points);
-                map.setViewport(polygon.getPath());    //调整视野 
+                // let polygon = new BMap.Polygon(points);
+                map.setViewport(points);    //调整视野 
             }
             if(type === "circle"){
-                let point = new BMap.Point(coords[0][0],coords[0][1])
-                let circle =  new BMap.Circle(point,radius);
-                map.setViewport({
-                    center: point,
-                    zoom: 14
-                });    //调整视野
+                let points = [];
+                //计算半径
+                let ra = Math.sqrt(Math.pow(Math.abs(coords[0][0]-coords[1][0]),2) + Math.pow(Math.abs(coords[0][1]-coords[1][1]),2));
+                let count = 4;     //四等分
+                let radians = (Math.PI / 180) * Math.round(360 / count);   //弧度
+                for (let i = 0; i < count; i++) {
+                    points.push(new BMap.Point(parseFloat(coords[0][0]) + ra*Math.sin(radians * i), parseFloat(coords[0][1]) + ra*Math.cos(radians * i)))
+                }
+                map.setViewport(points);    //调整视野
             }
         }
+    }
+    //根据行政区调整视野
+    setViewportByLocation(location){
+        let name = "";
+        if(location.district !== ""){
+            name = location.provinceName + location.cityName + location.districtName;
+        }else if(location.city !== ""){
+            name = location.provinceName + location.cityName
+        }else if(location.province !== ""){
+            name = location.provinceName
+        }else{
+            name = "中国"
+        }
+        this.getBoundary(name)
+    }
+    getBoundary(name){
+        if(name !== ""){
+            let bdary = new BMap.Boundary();
+            bdary.get(name, function(rs){       //获取行政区域
+                let count = rs.boundaries.length; //行政区域的点有多少个
+                if (count === 0) {
+                    console.error('未能获取当前输入行政区域');
+                    return ;
+                }
+                let pointArray = [];
+                for (let i = 0; i < count; i++) {
+                    let ply = new BMap.Polygon(rs.boundaries[i]); //建立多边形覆盖物
+                    pointArray = pointArray.concat(ply.getPath());
+                }    
+                map.setViewport(pointArray);    //调整视野  
+            }); 
+        }       
+          
+    }
+    getYAxisData(data){
+        let temp = [];
+        for (var i = 0; i < data.length; i++) {
+            temp.push(data[i].name)
+        }
+        return temp;
     }
 
 }

@@ -37,7 +37,7 @@ class LivestockPieChart extends Component {
                 {
                     name:'牲畜数量',
                     type:'pie',
-                    center: ['55%', '50%'],
+                    center: ['50%', '50%'],
                     radius: [0, '30%'],
                     color: ['#45c7c3','#327992'],
                     label: {
@@ -58,7 +58,7 @@ class LivestockPieChart extends Component {
                 {
                     name:'牲畜分类',
                     type:'pie',
-                    center: ['55%', '50%'],
+                    center: ['50%', '50%'],
                     radius: ['45%', '60%'],
                     color: ['#46d6aa','#4baede','#e9a17d','#b890ff','#78cdfe'],
                     label: {

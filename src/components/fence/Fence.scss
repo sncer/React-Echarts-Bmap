@@ -44,6 +44,40 @@
 		    &:focus{
 		    	outline: none;
 		    }
-		}		
+		}
+		.select2-wrapper{
+			.select2-container{
+				width: 200px !important;
+				border: #888e9e solid 1px;
+				border-radius: 16px;
+				.select2-selection{
+					background: none;
+					border: none;
+					height: 23px;
+					line-height: 23px;
+					&:focus{
+				    	outline: none;
+				    }
+					span{
+						color: #fff;
+						border: none;
+						height: 23px;
+						line-height: 23px;
+					}
+				}
+				.select2-selection__rendered{
+					padding-left: 18px;
+				}
+				.select2-selection__arrow{
+					top: 0;
+					right: 0;
+				}
+				.dropdown-wrapper{
+					color: #b7b7b7;
+				}
+				
+			}
+		}
+				
 	}
 }

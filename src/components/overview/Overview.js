@@ -47,8 +47,8 @@ export class Overview extends Component {
             },
         };
         this.ajaxParam = {
-        	url: '/smartGraze/poverty/getSortAiasByProvince',
-        	rankUrl: '/smartGraze/poverty/getSortByThing',
+        	url: '/poverty/getSortAiasByProvince',
+        	rankUrl: '/poverty/getSortByThing',
         };
         this.ajax = null;
     }

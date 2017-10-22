@@ -5,11 +5,14 @@ import LivestockPieChart from '../../components/livestockPieChart/LivestockPieCh
 import FenceBmapChart from '../../components/fenceBmapChart/FenceBmapChart';
 import CityPicker from '../../components/cityPicker/CityPicker';
 import AreaData from '../../js/utils/areaData.json';
+// 引入全国344个市、区、州对应的数字编号, 和相关通用方法
+import { CityMap, ProvinceMap, SpecialRegion, ProvinceNameMap, ProvinceCodeMap, getFullNameByName, getCodeByName } from '../../js/utils/geoMap';
 import './Fence.scss';
 // 引入jQuery（重要）
 import $ from 'jquery';
 import { sortBy } from '../../js/utils/comm.js';
-
+import Select2 from 'react-select2-wrapper';
+import 'react-select2-wrapper/css/select2.css';
 export class Fence extends Component {
 	constructor(){
         super();
@@ -33,7 +36,9 @@ export class Fence extends Component {
             	},
             },
             livestockPieChartData: [],
-            FenceBmapChartData: [],
+            fenceBmapChartData: [],
+            fenceSelectData: [],
+            rankBarChartData: [],
             location:{
             	province: '',
 				provinceName: '',
@@ -42,20 +47,70 @@ export class Fence extends Component {
 				district: '',
 				districtName: '',
             },
+            curFence: {
+            	id: 0,
+	            code: "",
+	            name: "",
+	            value: [],
+	            coords: [],
+	            type: "",
+	            radius: 0,
+	            location: "",
+	            class: "",
+	            provinceName: "",
+	            cityName: "",
+	            districtName: "",
+	        },
         };
         this.ajaxParam = {
-        	url: '/smartGraze/poverty/getEfSum',
+        	url: '/poverty/getEfSum',
         };
         this.ajax = null;  
 
 
     }
     //cityPicker回调函数，更新地点
-    handleLocationChange = (value) => {
+    handleLocationChange = (location) => {
     	// console.log(value)
 	    this.setState({
-	    	location: value
+	    	location: location
 	    },()=>{this.getData()});
+	}
+	handleSelectChange = (e) => {
+		//获取围栏id
+		let id = e.target.value;
+		if(id > 0){
+			let fence = this.getFenceById(id);
+			let location = this.getLocationByFence(fence);
+			this.setState({
+				curFence: fence,
+				location: location,
+			},()=>{this.getData()})
+		}else{
+			this.setState({
+				curFence: {
+					id: 0,
+		            code: "",
+		            name: "",
+		            value: [],
+		            coords: [],
+		            type: "",
+		            radius: 0,
+		            location: "",
+		            class: "",
+		            provinceName: "",
+		            cityName: "",
+		            districtName: "",
+				}
+			},()=>{this.getData()})
+		}
+	}
+	handleFenceClick = (fence) => {
+		let location = this.getLocationByFence(fence);
+		this.setState({
+			curFence: fence,
+			location: location,
+		},()=>{this.getData()})
 	}
 	componentDidMount(){
     	//获取数据，默认全国
@@ -66,7 +121,8 @@ export class Fence extends Component {
 		this.ajax.abort();
 	}
 	render() {
-		const { location, livestockPieChartData, FenceBmapChartData } = this.state;
+		const { location, livestockPieChartData, fenceBmapChartData, 
+			fenceSelectData, curFence, rankBarChartData } = this.state;
 		return (
 			<div className="main fence">
 				<div className="left">
@@ -107,9 +163,19 @@ export class Fence extends Component {
 								selectedDistrict = {location.district}
 								source = {AreaData}
 								onOptionChange = {this.handleLocationChange} />
+							<div className="select2-wrapper">
+								<Select2
+									value={ this.state.curFence.id }
+									data={fenceSelectData}
+									onChange={this.handleSelectChange}
+									options={{
+									    placeholder: '请选择围栏名称',
+									}}
+								/>
+							</div>
 							
 						</div>
-						<FenceBmapChart data={FenceBmapChartData} />
+						<FenceBmapChart data={fenceBmapChartData} barData={rankBarChartData} location={location} curFence={curFence} onFenceClick={this.handleFenceClick} />
 					</div>
 					
 				</div>
@@ -152,7 +218,9 @@ export class Fence extends Component {
 		            	},
 		        	},
 		        	livestockPieChartData: this.convertPieData(data.povertyAiasDataList || []),
-					FenceBmapChartData: this.convertBmapData(data.electricFenceExtendedList || []),
+					fenceBmapChartData: this.convertBmapData(data.electricFenceExtendedList || []),
+					fenceSelectData: this.convertSelectData(data.electricFenceExtendedList || []),
+					rankBarChartData: this.convertBarData(data.povertyDataList || []),
 		        })
 		        
 		    },
@@ -178,6 +246,24 @@ export class Fence extends Component {
 		}
 		return data;
     }
+    /**
+    *功能：转化排名条形图数据
+    *返回类型：Array
+    *形式：[{value:135, name:'北京市'}]
+    **/
+    convertBarData(arr){
+		let data = [];
+		if(arr.length > 0){
+			arr.map((item,index)=>{
+				data.push({
+					name: item.poicName,
+					value: item.aiasCount
+				});
+			});
+		}
+		data.sort(sortBy('value',false))
+		return data;
+    }
 	/**
     *功能：转化百度地图数据
     *返回类型：Array
@@ -191,12 +277,15 @@ export class Fence extends Component {
 					id: item.eetiFneId,
 					code: item.eetiFneCode,
 					name: item.eetiFneName,
-					// value: [],
+					value: [],
 					coords: this.convertCoords(item.lonLat),
 					type: item.grazeShapeName === "多边形" ? "polygon" : "circle",
 					radius: item.radius,
 					location: item.areaFullName,
 					class: item.grazeClassName,
+					provinceName: item.poicName,
+					cityName: item.cityName,
+					districtName: item.cutyDsrcName,
 				});
 			});
 			
@@ -206,10 +295,7 @@ export class Fence extends Component {
 	/**
     *功能：返回多边形顶点坐标
     *返回类型：Array
-    *形式：[
-                [116.7,39.53],
-                [103.73,36.03],
-            ]
+    *形式：[[116.7,39.53],[103.73,36.03]]
     **/
     convertCoords(str){
     	let coords = []
@@ -224,6 +310,97 @@ export class Fence extends Component {
     	}
     	return coords;
     }
+    /**
+    *功能：返回select2数据
+    *返回类型：Array
+    *形式：[{id:1, text:"围栏1"},{id:2, text:"围栏2"}]
+    **/
+    convertSelectData(arr){
+    	let data = [{
+    		id: 0,
+    		text: '请选择围栏名称',
+    	}]
+    	if(arr.length > 0){
+    		arr.map((item, index)=>{
+    			data.push({
+    				id: item.eetiFneId,
+    				text: item.eetiFneName,
+    			});
+    		});
+    	}
+    	return data;
+    }
+    //根据id获取围栏信息
+    getFenceById(id){
+		let {fenceBmapChartData} = this.state;
+		if(fenceBmapChartData.length > 0){
+			for (var i = 0; i < fenceBmapChartData.length; i++) {
+				if(fenceBmapChartData[i].id == id){
+					let fence = fenceBmapChartData[i];
+					return fence;
+				}
+			}
+		}
+		return {};
+    }
+    /**
+    *功能：根据围栏所在省市县名称获取省市县的编码
+    *返回类型：Object
+    *形式：{
+            	province: '',
+				provinceName: '',
+				city: '',
+				cityName: '',
+				district: '',
+				districtName: '',
+            }
+    **/
+    getLocationByFence(fence){
+    	let { provinceName, cityName, districtName } = fence;
+		//获取围栏所在省市县的编码
+		let province = ProvinceCodeMap[provinceName];
+		let city = CityMap[cityName];
+		let district = "";
+		let districtMap = AreaData[city];
+		let location = {};
+		for( let key in districtMap){
+			if(districtMap[key] === districtName){
+				district = key;
+				break;
+			}
+		}
+		if(province !== "" && provinceName !== ""){
+			location.province = province;
+			location.provinceName = provinceName;
+			if(city !== "" && cityName !== ""){
+				location.city = city;
+				location.cityName = cityName;
+				if(district !== "" && districtName !== ""){
+					location.district = district;
+					location.districtName = districtName;
+				}else{
+					location.district = '';
+					location.districtName = '';
+				}
+			}else{
+				location.city = '';
+				location.cityName = '';
+				location.district = '';
+				location.districtName = '';
+			}
+		}else{
+			location = {
+            	province: '',
+				provinceName: '',
+				city: '',
+				cityName: '',
+				district: '',
+				districtName: '',
+            }
+		}
+		return location;
+    }
+    
     
 }
 
