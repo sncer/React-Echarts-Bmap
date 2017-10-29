@@ -39,15 +39,16 @@ export class Fence extends Component {
             fenceBmapChartData: [],
             fenceSelectData: [],
             rankBarChartData: [],
-            location:{
-            	province: '',
-				provinceName: '',
-				city: '',
-				cityName: '',
-				district: '',
-				districtName: '',
-            },
-            curFence: {
+            location: this.getInitLocation(),
+            curFence: this.getInitFence(),
+        };
+        this.ajaxParam = {
+        	url: '/poverty/getEfSum',
+        };
+        this.ajax = null;  
+    }
+    getInitFence(){
+    	return {
             	id: 0,
 	            code: "",
 	            name: "",
@@ -60,14 +61,17 @@ export class Fence extends Component {
 	            provinceName: "",
 	            cityName: "",
 	            districtName: "",
-	        },
-        };
-        this.ajaxParam = {
-        	url: '/poverty/getEfSum',
-        };
-        this.ajax = null;  
-
-
+	        }
+    }
+    getInitLocation(){
+    	return {
+            	province: '',
+				provinceName: '',
+				city: '',
+				cityName: '',
+				district: '',
+				districtName: '',
+            }
     }
     //cityPicker回调函数，更新地点
     handleLocationChange = (location) => {
@@ -88,20 +92,7 @@ export class Fence extends Component {
 			},()=>{this.getData()})
 		}else{
 			this.setState({
-				curFence: {
-					id: 0,
-		            code: "",
-		            name: "",
-		            value: [],
-		            coords: [],
-		            type: "",
-		            radius: 0,
-		            location: "",
-		            class: "",
-		            provinceName: "",
-		            cityName: "",
-		            districtName: "",
-				}
+				curFence: this.getInitFence()
 			},()=>{this.getData()})
 		}
 	}
@@ -110,6 +101,13 @@ export class Fence extends Component {
 		this.setState({
 			curFence: fence,
 			location: location,
+		},()=>{this.getData()})
+	}
+	handleClearAllClick = () => {
+		this.ajax.abort();
+		this.setState({
+			curFence: this.getInitFence(),
+			location: this.getInitLocation(),
 		},()=>{this.getData()})
 	}
 	componentDidMount(){
@@ -173,7 +171,7 @@ export class Fence extends Component {
 									}}
 								/>
 							</div>
-							
+							<button className="clearall-btn" onClick={this.handleClearAllClick}>清空</button>
 						</div>
 						<FenceBmapChart data={fenceBmapChartData} barData={rankBarChartData} location={location} curFence={curFence} onFenceClick={this.handleFenceClick} />
 					</div>
@@ -389,14 +387,7 @@ export class Fence extends Component {
 				location.districtName = '';
 			}
 		}else{
-			location = {
-            	province: '',
-				provinceName: '',
-				city: '',
-				cityName: '',
-				district: '',
-				districtName: '',
-            }
+			location = this.getInitLocation()
 		}
 		return location;
     }

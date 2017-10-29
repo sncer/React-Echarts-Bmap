@@ -51,6 +51,22 @@
 		    }
 		}		
 	}
+	.daterangepicker-wrapper{
+		position: absolute;
+		top: 10px;
+		left: 100px;
+		z-index: 100;
+		.daterangepicker-content{
+			background-color: transparent;
+			color: white;
+			border: #888e9e solid 1px;
+			height: 25px;
+			padding: 1px 15px;
+			text-align: center;
+			border-radius: 16px;
+		}
+	
+	}
 	
 
 }

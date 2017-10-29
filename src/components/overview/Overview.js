@@ -37,14 +37,7 @@ export class Overview extends Component {
             pictorialBarChartData:[],
             rankLineChartData: [],
             rankListData:[],
-            location:{
-            	province: '',
-				provinceName: '',
-				city: '',
-				cityName: '',
-				district: '',
-				districtName: '',
-            },
+            location: this.getInitLocation(),
         };
         this.ajaxParam = {
         	url: '/poverty/getSortAiasByProvince',
@@ -52,12 +45,29 @@ export class Overview extends Component {
         };
         this.ajax = null;
     }
+    getInitLocation(){
+    	return {
+            	province: '',
+				provinceName: '',
+				city: '',
+				cityName: '',
+				district: '',
+				districtName: '',
+            }
+    }
     //cityPicker回调函数，更新地点
     handleLocationChange = (value) => {
     	// console.log(value)
 	    this.setState({
 	    	location: value
 	    },()=>{this.getData();this.getRankData();});
+	}
+	handleClearAllClick = () => {
+		this.ajax.abort();
+		this.rankAjax.abort();
+		this.setState({
+			location: this.getInitLocation()
+		},()=>{this.getData();this.getRankData();})
 	}
     componentDidMount(){
     	//获取数据，默认全国
@@ -117,6 +127,7 @@ export class Overview extends Component {
 								selectedDistrict = {location.district}
 								source = {AreaData}
 								onOptionChange = {this.handleLocationChange} />
+							<button className="clearall-btn" onClick={this.handleClearAllClick}>清空</button>
 						</div>
 						<div className="rank_list">
 							<div className="title"><i></i>{this.getRankListTitle()}牲畜数排名</div>
@@ -226,7 +237,7 @@ export class Overview extends Component {
     }
     //切换数据类型
     changeRankIndex(index,e) {
-    	
+    	this.rankAjax.abort();
     	this.setState({
     		rankIndex: index,
     	},()=>{this.getRankData();})
