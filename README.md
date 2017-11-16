@@ -1,4 +1,4 @@
-React+React Router+Echarts+Bmap+Webpack+ES6+Babel+SCSS
+React+ReactRouter+Echarts+Bmap+Webpack+ES6+Babel+SCSS
 ========================================
 
 Introduction:
